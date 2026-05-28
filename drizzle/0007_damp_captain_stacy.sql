@@ -1,0 +1,1 @@
+ALTER TABLE "projects" ADD COLUMN "stage" "stage" DEFAULT 'Идея';
