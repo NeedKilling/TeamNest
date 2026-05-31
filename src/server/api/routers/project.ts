@@ -1,5 +1,6 @@
+import { projectsSchema } from "@/app/lib/schemas/project";
 import { db } from "@/server/db";
-import { projects ,industries} from "@/server/db/schema";
+import { projects } from "@/server/db/schema";
 import { and, eq } from "drizzle-orm";
 import Elysia from "elysia";
 import z from "zod/v4";
@@ -24,6 +25,26 @@ export const projectsRouter = new Elysia({
 
     return foundedProduct ?? null
 
+},{
+    params: z.object({
+        id: z.string()
+    })
+})
+.post("/", async ({body})=>{
+    await db.insert(projects).values(body)
+},{
+    body: projectsSchema,
+})
+.put("/:id", async ({params, body})=>{
+    await db.update(projects).set(body).where(eq(projects.id, params.id))
+},{
+    body: projectsSchema,
+    params: z.object({
+        id: z.string()
+    })
+}) 
+.delete("/:id", async ({params})=>{
+    await db.update(projects).set({isDeleted: true}).where(eq(projects.id, params.id))
 },{
     params: z.object({
         id: z.string()

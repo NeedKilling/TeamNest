@@ -1,0 +1,1 @@
+ALTER TABLE "personnel" DROP COLUMN "contacts";

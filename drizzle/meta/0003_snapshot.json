@@ -1,11 +1,50 @@
 {
-  "id": "8d522d8a-03a5-45b7-a74d-bf7648bbf6c2",
-  "prevId": "1871d82c-65ad-4ae4-8435-926d8807cfcb",
+  "id": "e512cc05-24df-467a-999b-256d7953e8d0",
+  "prevId": "ee779d10-c5fb-4546-bded-23d07919891d",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
     "public.categories": {
       "name": "categories",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "is_deleted": {
+          "name": "is_deleted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.industries": {
+      "name": "industries",
       "schema": "",
       "columns": {
         "id": {
@@ -67,14 +106,8 @@
           "notNull": true,
           "default": "now()"
         },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "lastName": {
-          "name": "lastName",
+        "full_name": {
+          "name": "full_name",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
@@ -103,11 +136,19 @@
           "primaryKey": false,
           "notNull": true
         },
-        "tg_username": {
-          "name": "tg_username",
-          "type": "varchar(255)",
+        "contacts": {
+          "name": "contacts",
+          "type": "varchar(255)[]",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "'{}'"
+        },
+        "skills": {
+          "name": "skills",
+          "type": "varchar(255)[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'"
         },
         "specialization_id": {
           "name": "specialization_id",
@@ -192,10 +233,50 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "industries_id": {
+          "name": "industries_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "stage": {
+          "name": "stage",
+          "type": "stage",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'Idea'"
+        },
+        "start_date": {
+          "name": "start_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "link_project": {
+          "name": "link_project",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "projects_industries_id_industries_id_fk": {
+          "name": "projects_industries_id_industries_id_fk",
+          "tableFrom": "projects",
+          "tableTo": "industries",
+          "columnsFrom": [
+            "industries_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -242,7 +323,17 @@
       "isRLSEnabled": false
     }
   },
-  "enums": {},
+  "enums": {
+    "public.stage": {
+      "name": "stage",
+      "schema": "public",
+      "values": [
+        "Idea",
+        "Realization",
+        "Completed"
+      ]
+    }
+  },
   "schemas": {},
   "sequences": {},
   "roles": {},

@@ -1,11 +1,50 @@
 {
-  "id": "1871d82c-65ad-4ae4-8435-926d8807cfcb",
-  "prevId": "7425bc72-f4f7-4d71-8002-ae59dfea3f1c",
+  "id": "ee779d10-c5fb-4546-bded-23d07919891d",
+  "prevId": "fa58ea78-eea2-48c6-93c6-9ab658546549",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
     "public.categories": {
       "name": "categories",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "is_deleted": {
+          "name": "is_deleted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.industries": {
+      "name": "industries",
       "schema": "",
       "columns": {
         "id": {
@@ -67,14 +106,8 @@
           "notNull": true,
           "default": "now()"
         },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "lastName": {
-          "name": "lastName",
+        "full_name": {
+          "name": "full_name",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
@@ -103,11 +136,12 @@
           "primaryKey": false,
           "notNull": true
         },
-        "tg_username": {
-          "name": "tg_username",
-          "type": "varchar(255)",
+        "skills": {
+          "name": "skills",
+          "type": "varchar(255)[]",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "'{}'"
         },
         "specialization_id": {
           "name": "specialization_id",
@@ -193,15 +227,49 @@
           "primaryKey": false,
           "notNull": true
         },
-        "date": {
-          "name": "date",
-          "type": "varchar",
+        "industries_id": {
+          "name": "industries_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "stage": {
+          "name": "stage",
+          "type": "stage",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'Idea'"
+        },
+        "start_date": {
+          "name": "start_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "link_project": {
+          "name": "link_project",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "projects_industries_id_industries_id_fk": {
+          "name": "projects_industries_id_industries_id_fk",
+          "tableFrom": "projects",
+          "tableTo": "industries",
+          "columnsFrom": [
+            "industries_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -248,7 +316,17 @@
       "isRLSEnabled": false
     }
   },
-  "enums": {},
+  "enums": {
+    "public.stage": {
+      "name": "stage",
+      "schema": "public",
+      "values": [
+        "Idea",
+        "Realization",
+        "Completed"
+      ]
+    }
+  },
   "schemas": {},
   "sequences": {},
   "roles": {},

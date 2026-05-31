@@ -1,0 +1,1 @@
+ALTER TABLE "personnel" ADD COLUMN "contacts" varchar(255)[] DEFAULT '{}' NOT NULL;

@@ -1,0 +1,1 @@
+ALTER TABLE "personnel" RENAME COLUMN "name" TO "full_name";

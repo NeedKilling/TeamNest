@@ -1,20 +1,34 @@
 import { db } from "@/server/db";
-import { industries, projects } from "@/server/db/schema";
+import { categories, industries, personnel, projects, specialization } from "@/server/db/schema";
 import { asc, desc, eq } from "drizzle-orm";
 
 let foundProjects = await db.query.projects.findMany();
+
+// await db.insert(personnel).values({
+//     fullName: "Александр Соколов",
+//     age: 30,
+//     city: "Химки",
+//     shortResume: "1C разработчик с опытом создания стартапов. Ищу интересный проект.",
+//     education: "2005 - 2020 год МГУ им. М.В. Ломоносова Юридический факультет",
+//     contacts: [
+//         { "type": "phone", "value": "+79991234567" },
+//         ],
+//     skills: ["1C"],
+//     specializationId: "019e7e8a-1c24-7000-92cd-bc70675bbba5",
+//     categoriesId: "019e7e87-677a-7000-84bf-0f1edad2102b"
+// })
 // console.log(foundProjects)
 // await db.insert(projects).values({
-//     name: "Проект 4",
+//     name: "Проект 2",
 //     description: "Lorem ipsum dolor sit amet consectetur. Est pretium urna ut du",
-//     industriesId: "019e6f1b-1547-7000-a8b2-518c4cb8d9c9",
-//     stage: "Идея",
-//     startDate: new Date("2026-05-28"), 
+//     industriesId: "019e7e81-7a4b-7000-ba58-b123c6060245",
+//     stage: "Realization",
+//     startDate: new Date("2023-05-28"), 
 //     linkProject: "https://link",
 
 // })
 // await db.insert(industries).values({
-//     name: "Маркетинг",
+//     name: "Телекоммуникации",
 // })
 
 // await db.update(projects).set({

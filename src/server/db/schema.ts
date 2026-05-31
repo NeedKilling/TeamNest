@@ -11,17 +11,14 @@ export const commonFields = {
   createdAt: pg.timestamp("created_at").notNull().defaultNow(),
 };
 
-
-
 export const personnel = pg.pgTable("personnel",{
     ...commonFields,
-    name: pg.varchar("name",{length: 255}).notNull(),
-    lastName: pg.varchar("lastName", {length: 255}).notNull(),
+    fullName: pg.varchar("full_name",{length: 255}).notNull(),
     age: pg.integer("age").notNull(),
     city:pg.varchar("city",{length: 255}).notNull(),
     shortResume: pg.text("short_Resume").notNull(),
     education: pg.text("education").notNull(),
-    tgUserName: pg.varchar("tg_username", {length: 255}),
+    contacts: pg.jsonb("contacts").notNull().default([]),
 
 
     skills: pg.varchar("skills", {length: 255}).array().notNull().default([]),
@@ -39,8 +36,6 @@ export const categories = pg.pgTable("categories",{
     ...commonFields,
     name: pg.varchar("name", {length: 255}).notNull(),
 })
-
-
 
 export const personnelRealations = relations(personnel, ({one}) => ({
     specialization: one(specialization,{
@@ -62,8 +57,9 @@ export const categoriesRealations = relations(categories, ({many})=>({
 
 
 
-export const stageEnum = pg.pgEnum('stage', ['Идея', 'Реализация', 'Завершен']); //      как лучше, так 
-// export const stageEnum = pg.pgEnum('stage', ['Idea', 'Realization', 'Completed']);                      или так?
+
+
+export const stageEnum = pg.pgEnum('stage', ['Idea', 'Realization', 'Completed']);                 
 
 
 export const projects  = pg.pgTable("projects",{
@@ -73,7 +69,7 @@ export const projects  = pg.pgTable("projects",{
     
 
     industriesId: pg.varchar("industries_id",{length: 255}).notNull().references(()=>industries.id),
-    stage: stageEnum("stage").default('Идея'), //'Idea'
+    stage: stageEnum("stage").default('Idea'), //'Idea'
     startDate: pg.timestamp("start_date").notNull(),
     linkProject: pg.text("link_project").notNull()
     
