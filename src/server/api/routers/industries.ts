@@ -1,6 +1,6 @@
 import { industriesSchema } from "@/app/lib/schemas/industries";
 import { db } from "@/server/db";
-import { industries } from "@/server/db/schema";
+import { industries, projects } from "@/server/db/schema";
 import { and, eq } from "drizzle-orm";
 import Elysia from "elysia";
 import z from "zod/v4"
@@ -42,6 +42,8 @@ export const industriesRouter = new Elysia({
 }) 
 .delete("/:id", async ({params})=>{
     await db.update(industries).set({isDeleted: true}).where(eq(industries.id, params.id))
+
+    await db.update(projects).set({isDeleted: true}).where(eq(projects.industriesId, params.id))
 },{
     params: z.object({
         id: z.string()

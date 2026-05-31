@@ -47,6 +47,8 @@ export const specializationRouter = new Elysia({
 }) 
 .delete("/:id", async ({params})=>{
     await db.update(specialization).set({isDeleted: true}).where(eq(specialization.id, params.id))
+
+    await db.update(personnel).set({isDeleted: true}).where(eq(personnel.specializationId, params.id))
 },{
     params: z.object({
         id: z.string()
