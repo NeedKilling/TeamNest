@@ -1,8 +1,21 @@
+import { api } from "@/server/api";
 import Image from "next/image";
 
-export default function Home() {
+export default async function Home() {
+
+  const projects = (await api.projects.get()).data
+  console.log(projects)
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+      <div>{
+          projects?.map((item)=>
+          <div key = {item.id} className="p-5 w-200px m-5 bg-blue-200">
+              <p>{item.name}</p>
+              <p>{item.stage}</p>
+              <p>{item.startDate.toLocaleDateString()}</p>
+          </div>
+          )
+        }</div>
       <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
         <Image
           className="dark:invert"
