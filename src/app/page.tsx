@@ -1,10 +1,19 @@
 import { api } from "@/server/api";
+import { auth } from "@/server/auth/auth";
 import Image from "next/image";
+import {headers as nextHeaders} from "next/headers"
 
 export default async function Home() {
 
   const projects = (await api.projects.get()).data
   console.log(projects)
+
+  const session = (await auth.api.getSession({
+    headers: await nextHeaders()
+
+  }));
+  console.log(session)
+
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
       <div>{

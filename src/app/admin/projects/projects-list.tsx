@@ -3,18 +3,15 @@
 import { api } from "@/lib/client/api"
 import { useQuery } from "@tanstack/react-query"
 
-export default function ProjectCards(){
-
+export function ProjectsList(){
     const {data: projects, isLoading} = useQuery({
-        queryKey: ['projects'],
+        queryKey: ["projects"],
         queryFn: async ()=>{
-            return ((await api.projects.get()).data)
+            return (await api.projects.get()).data
         }
     })
-
     return(
-        <div className="mt-10">
-            <p>вот карточки</p>
+        <div>
             {isLoading && <p className="text-4xl color-gray-200 mt-50">Данные загружаются ...</p>} 
             <div>
                 {

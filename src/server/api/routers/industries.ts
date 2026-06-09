@@ -1,4 +1,4 @@
-import { industriesSchema } from "@/app/lib/schemas/industries";
+import { industriesSchema } from "@/lib/schemas/industries";
 import { db } from "@/server/db";
 import { industries, projects } from "@/server/db/schema";
 import { and, eq } from "drizzle-orm";

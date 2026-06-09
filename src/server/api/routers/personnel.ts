@@ -1,4 +1,4 @@
-import { personnelSchema } from "@/app/lib/schemas/personnel";
+import { personnelSchema } from "@/lib/schemas/personnel";
 import { db } from "@/server/db";
 import { personnel } from "@/server/db/schema";
 import { and, eq } from "drizzle-orm";

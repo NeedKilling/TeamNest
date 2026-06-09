@@ -1,4 +1,4 @@
-import { specializationSchema } from "@/app/lib/schemas/specialization";
+import { specializationSchema } from "@/lib/schemas/specialization";
 import { db } from "@/server/db";
 import { personnel, specialization } from "@/server/db/schema";
 import { and, eq } from "drizzle-orm";

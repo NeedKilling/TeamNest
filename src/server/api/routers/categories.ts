@@ -1,4 +1,4 @@
-import { categoriesSchema } from "@/app/lib/schemas/catefories";
+import { categoriesSchema } from "@/lib/schemas/catefories";
 import { db } from "@/server/db";
 import { categories , personnel} from "@/server/db/schema";
 import { and, eq } from "drizzle-orm";

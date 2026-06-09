@@ -1,4 +1,4 @@
-import { projectsSchema } from "@/app/lib/schemas/project";
+import { projectsSchema, projectsSchemaForServer } from "@/lib/schemas/project";
 import { db } from "@/server/db";
 import { projects } from "@/server/db/schema";
 import { and, eq } from "drizzle-orm";
@@ -31,9 +31,16 @@ export const projectsRouter = new Elysia({
     })
 })
 .post("/", async ({body})=>{
-    await db.insert(projects).values(body)
+    await db.insert(projects).values({
+        name: body.name,
+        description: body.description,
+        industriesId: body.industriesId,
+        stage: body.stage,
+        startDate: body.startDate,
+        linkProject: body.linkProject,
+    })
 },{
-    body: projectsSchema,
+    body: projectsSchemaForServer,
 })
 .put("/:id", async ({params, body})=>{
     await db.update(projects).set(body).where(eq(projects.id, params.id))

@@ -43,6 +43,20 @@
       "when": 1780240608045,
       "tag": "0005_wide_ultimates",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1781013446732,
+      "tag": "0006_moaning_sally_floyd",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1781020016346,
+      "tag": "0007_solid_onslaught",
+      "breakpoints": true
     }
   ]
 }

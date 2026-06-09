@@ -5,10 +5,14 @@ import { personnelRouter } from "./routers/personnel";
 import { specializationRouter } from "./routers/specialization";
 import { categoriesRouter } from "./routers/categories";
 import { treaty } from "@elysiajs/eden";
+import { auth } from "../auth/auth";
 
 export const app = new Elysia({
     prefix: "/api",
 })
+
+.mount(auth.handler)
+
 .use(projectsRouter)
 .use(industriesRouter)
 .use(personnelRouter)
