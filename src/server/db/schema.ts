@@ -71,6 +71,7 @@ export const projects  = pg.pgTable("projects",{
     
 
     industriesId: pg.varchar("industries_id",{length: 255}).notNull().references(()=>industries.id),
+    
     stage: stageEnum("stage").default('Idea'), //'Idea'
     startDate: pg.timestamp("start_date").notNull(),
     linkProject: pg.text("link_project").notNull()

@@ -4,17 +4,30 @@ import { projects } from "@/server/db/schema";
 import { and, eq } from "drizzle-orm";
 import Elysia from "elysia";
 import z from "zod/v4";
+import { userService } from "./user";
 
 export const projectsRouter = new Elysia({
     prefix: "/projects"
 })
-.get("/", async ()=>{
+.use(userService)
+.get("/", async ({session})=>{
     const foundProjects = await db.query.projects.findMany({
         where: eq(projects.isDeleted, false),
         
     })
     return foundProjects
+},{
+    isSignedId: true,
+    isAdmin: true,
 })
+
+// .get("/", async ()=>{
+//     const foundProjects = await db.query.projects.findMany({
+//         where: eq(projects.isDeleted, false),
+        
+//     })
+//     return foundProjects
+// })
 .get("/:id",async ({params})=>{
     const foundedProduct = await db.query.projects.findFirst({
         where: and(
