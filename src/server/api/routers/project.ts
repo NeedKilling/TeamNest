@@ -5,17 +5,26 @@ import { and, eq } from "drizzle-orm";
 import Elysia from "elysia";
 import z from "zod/v4";
 import { userService } from "./user";
+import { redis } from "bun";
 
 export const projectsRouter = new Elysia({
     prefix: "/projects"
 })
 .use(userService)
 .get("/", async ({session})=>{
-    const foundProjects = await db.query.projects.findMany({
-        where: eq(projects.isDeleted, false),
-        
-    })
-    return foundProjects
+    const query = db.query.projects.findMany({
+            where: eq(projects.isDeleted, false),
+        })
+    
+        type proj = Awaited<ReturnType<typeof query.execute>>
+    
+        const cashProjects = await redis.get("projects")
+        if(cashProjects){
+            return JSON.parse(cashProjects) as proj
+        }
+    
+        const dbProjects = await query.execute()
+        await redis.set("projects", JSON.stringify(dbProjects), "EX", 60*60*24)
 },{
     isSignedId: true,
     isAdmin: true,
@@ -43,7 +52,7 @@ export const projectsRouter = new Elysia({
         id: z.string()
     })
 })
-.post("/", async ({body})=>{
+.post("/", async ({body, session})=>{
     await db.insert(projects).values({
         name: body.name,
         description: body.description,
@@ -52,11 +61,15 @@ export const projectsRouter = new Elysia({
         startDate: body.startDate,
         linkProject: body.linkProject,
     })
+
+    await redis.del("projects")
 },{
     body: projectsSchemaForServer,
 })
 .put("/:id", async ({params, body})=>{
     await db.update(projects).set(body).where(eq(projects.id, params.id))
+
+    await redis.del("projects")
 },{
     body: projectsSchema,
     params: z.object({
@@ -65,6 +78,8 @@ export const projectsRouter = new Elysia({
 }) 
 .delete("/:id", async ({params})=>{
     await db.update(projects).set({isDeleted: true}).where(eq(projects.id, params.id))
+
+    await redis.del("projects")
 },{
     params: z.object({
         id: z.string()
