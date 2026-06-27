@@ -18,5 +18,5 @@ export const personnelSchema = z.object({
     skills: z.array(z.string()).default([]),
     specializationId: z.string({message: "Выберите специальность"}),
     categoriesId: z.string({message: "Выберите категорию"}),
-    
+    image: z.string().optional()
 })

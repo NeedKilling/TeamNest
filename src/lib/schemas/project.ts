@@ -10,6 +10,7 @@ export const projectsSchema = z.object({
     stage:  stageEnum,
     // startDate: z.coerce.date({message: "Введите дату начала проекта"}),
     startDate: z.date({message: "Введите дату начала проекта"}),
+    
     // // startDate: z.string({ message: "Введите дату начала проекта" }),
     // startDate: z
     // .string({ message: "Введите дату начала проекта" }).date({ message: "Дата должна быть в формате ГГГГ-ММ-ДД" }),
@@ -33,6 +34,7 @@ export const projectsSchema = z.object({
     // .transform((str) => new Date(str)),
     
     linkProject: z.string({message: "Введите ссылку на проект"}),
+    image: z.string().optional()
 })
 
 

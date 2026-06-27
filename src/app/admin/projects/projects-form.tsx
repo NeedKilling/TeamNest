@@ -1,5 +1,6 @@
 "use client"
 
+import ImageInput from "@/components/ui/image-input"
 import { api } from "@/lib/client/api"
 import { queryClient } from "@/lib/client/query-client"
 import { projectsSchema, stageEnum } from "@/lib/schemas/project"
@@ -20,7 +21,10 @@ export function ProjectsForm(){
             alert("Проект создан")
             queryClient.invalidateQueries({
                 queryKey: ["projects"],
+                
+                
             })
+            
         },
 
     })
@@ -137,6 +141,21 @@ export function ProjectsForm(){
                         <input className = "w-[100%] bg-blue-300 p-2 rounded-xl placeholder:bg-white-100"  placeholder ="Введите ссылку на проект" type="text"
                             value={field.state.value} 
                             onChange={(e) => field.handleChange(e.target.value) }/>
+                        {field.state.meta.errors.map((err)=><p className="text-red-500" key={err?.message}>{err?.message}</p>)}
+                    </div>
+                )}
+            </projectsForm.Field>
+            <projectsForm.Field name="image">
+                {(field)=>(
+                    <div>
+                        <div className = "flex justify-between gap-5">
+                            <input className = "w-[100%] bg-blue-300 p-2 rounded-xl placeholder:bg-white-100"  placeholder ="Введите id фото" type="text"
+                            value={field.state.value} 
+                            onChange={(e) => field.handleChange(e.target.value) }/>
+
+                            <ImageInput onChange={(e)=>field.handleChange(e)}/>
+                        </div>
+                        
                         {field.state.meta.errors.map((err)=><p className="text-red-500" key={err?.message}>{err?.message}</p>)}
                     </div>
                 )}

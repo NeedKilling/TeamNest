@@ -7,6 +7,8 @@ import z from "zod/v4";
 import { userService } from "./user";
 import { redis } from "bun";
 
+const patchProjectSchema = projectsSchema.partial()
+
 export const projectsRouter = new Elysia({
     prefix: "/projects"
 })
@@ -60,6 +62,7 @@ export const projectsRouter = new Elysia({
         stage: body.stage,
         startDate: body.startDate,
         linkProject: body.linkProject,
+        image: body.image
     })
 
     await redis.del("projects")
@@ -76,6 +79,20 @@ export const projectsRouter = new Elysia({
         id: z.string()
     })
 }) 
+
+
+.patch("/:id", async ({params, body})=>{
+    await db.update(projects).set(body).where(eq(projects.id, params.id))
+
+    await redis.del("projects")
+},{
+    body: patchProjectSchema,
+    params: z.object({
+        id: z.string()
+    })
+}) 
+
+
 .delete("/:id", async ({params})=>{
     await db.update(projects).set({isDeleted: true}).where(eq(projects.id, params.id))
 

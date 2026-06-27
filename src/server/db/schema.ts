@@ -1,17 +1,12 @@
 import { relations } from "drizzle-orm";
 import * as pg from "drizzle-orm/pg-core";
+import {commonFields} from "./utils"
+
 export * from "./auth-schema"
+export * from "./files"
 
 
-export const commonFields = {
-  id: pg
-    .varchar("id", { length: 255 })
-    .notNull()
-    .primaryKey()
-    .$defaultFn(() => Bun.randomUUIDv7()),
-  isDeleted: pg.boolean("is_deleted").default(false),
-  createdAt: pg.timestamp("created_at").notNull().defaultNow(),
-};
+
 
 export const personnel = pg.pgTable("personnel",{
     ...commonFields,
@@ -26,8 +21,9 @@ export const personnel = pg.pgTable("personnel",{
     skills: pg.varchar("skills", {length: 255}).array().notNull().default([]),
 
     specializationId: pg.varchar("specialization_id",{length: 255}).notNull().references(()=>specialization.id),
-    categoriesId:pg.varchar("categories_id", {length: 255}).notNull().references(()=>categories.id)
+    categoriesId:pg.varchar("categories_id", {length: 255}).notNull().references(()=>categories.id),
 
+    image: pg.varchar("image" ,{length: 255})
 });
 
 export const specialization = pg.pgTable("specialization",{
@@ -74,7 +70,8 @@ export const projects  = pg.pgTable("projects",{
     
     stage: stageEnum("stage").default('Idea'), //'Idea'
     startDate: pg.timestamp("start_date").notNull(),
-    linkProject: pg.text("link_project").notNull()
+    linkProject: pg.text("link_project").notNull(),
+    image: pg.varchar("image", {length: 255})
     
 }) 
 

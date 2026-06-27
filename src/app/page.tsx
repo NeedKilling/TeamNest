@@ -2,10 +2,14 @@ import { api } from "@/server/api";
 import { auth } from "@/server/auth/auth";
 import Image from "next/image";
 import {headers as nextHeaders} from "next/headers"
+import z from "zod/v4"
+import { projectsSchema } from "@/lib/schemas/project";
+
+const imgUrl = "http://localhost:3000/api/files/"
 
 export default async function Home() {
 
-  const projects = (await api.projects.get({headers: await nextHeaders()})).data
+  const projects = (await api.projects.get({headers: await nextHeaders()})).data as (z.infer<typeof projectsSchema> & { id: string })[]
   console.log(projects)
 
   const session = await auth.api.getSession({
@@ -14,9 +18,9 @@ export default async function Home() {
   });
   console.log(session)
 
-  console.log(await api.projects.get({headers: await nextHeaders()}));
+  console.log((await api.projects.get({headers: await nextHeaders()})).data as z.infer<typeof projectsSchema>[]);
 
-  
+  // 019ef5e2-2433-7000-81ea-1460c988429e
 
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
@@ -26,6 +30,7 @@ export default async function Home() {
               <p>{item.name}</p>
               <p>{item.stage}</p>
               <p>{item.startDate.toLocaleDateString()}</p>
+              <img className = "w-100 mx-auto " src={item.image ? imgUrl+item.image : "/noImage.png"} alt="" />
           </div>
           )
         }</div>
@@ -38,6 +43,7 @@ export default async function Home() {
           height={20}
           priority
         />
+        <img src="http://localhost:3000/api/files/019ef5a7-cf57-7000-a972-cb1eb0a2ec46" alt="img" />
         <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
           <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
             To get started, edit the page.tsx file.
