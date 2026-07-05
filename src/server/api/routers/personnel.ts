@@ -2,9 +2,11 @@ import { personnelSchema } from "@/lib/schemas/personnel";
 import { db } from "@/server/db";
 import { personnel } from "@/server/db/schema";
 import { redis } from "bun";
-import { and, eq } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 import Elysia from "elysia";
 import z from "zod/v4"
+import { userService } from "./user";
+import { AppError } from "..";
 
 
 
@@ -12,9 +14,10 @@ export const personnelRouter = new Elysia({
     prefix: "/personnel"
 })
 
-
+.use(userService)
 .get("/", async ()=>{
     const query = db.query.personnel.findMany({
+        orderBy: (personnel, {asc}) => asc(personnel.createdAt),
         where: eq(personnel.isDeleted, false),
     })
 
@@ -28,23 +31,31 @@ export const personnelRouter = new Elysia({
     const dbPersonnel = await query.execute()
     await redis.set("personnel", JSON.stringify(dbPersonnel), "EX", 60*60*24)
 
-
+    return dbPersonnel
 })
 
 
 
 .get("/:id", async ({params})=>{
-    return await db.query.personnel.findFirst({
+    const response = await db.query.personnel.findFirst({
         where: and(
             eq(personnel.id, params.id),
             eq(personnel.isDeleted, false),
         )
-    }) ?? null
+    })
+    if(!response){
+        throw new AppError("Пользователь не найден", 404, "NOT_FOUND")
+    }
+
+    return response ?? null
 }, {
     params: z.object({
         id: z.string()
     })
 })
+
+
+
 .post("/", async ({body})=>{
     await db.insert(personnel).values(body)
 
@@ -52,7 +63,19 @@ export const personnelRouter = new Elysia({
 },{
     body: personnelSchema,
 })
-.put("/:id", async ({params, body})=>{
+
+.put("/:id", async ({params, body, session})=>{
+    const response = await db.query.personnel.findFirst({
+        where: and(
+            eq(personnel.id, params.id),
+            eq(personnel.isDeleted, false),
+            ne(personnel.id, params.id) // !!!! 
+        )
+    })
+    if(!response){
+        throw new AppError("Пользователь не найден", 404, "NOT_FOUND")
+    }
+
     await db.update(personnel).set(body).where(eq(personnel.id, params.id))
 
     await redis.del("personnel")
@@ -60,9 +83,21 @@ export const personnelRouter = new Elysia({
     body: personnelSchema,
     params: z.object({
         id: z.string()
-    })
+    }),
+    isSignedId: true
 }) 
 .delete("/:id", async ({params})=>{
+
+    const response = await db.query.personnel.findFirst({
+        where: and(
+            eq(personnel.id, params.id),
+            eq(personnel.isDeleted, false),
+        )
+    })
+    if(!response){
+        throw new AppError("Пользователь не найден", 404, "NOT_FOUND")
+    }
+
     await db.update(personnel).set({isDeleted: true}).where(eq(personnel.id, params.id))
 
     await redis.del("personnel")

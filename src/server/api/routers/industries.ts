@@ -5,14 +5,18 @@ import { redis } from "bun";
 import { and, eq } from "drizzle-orm";
 import Elysia from "elysia";
 import z from "zod/v4"
+import { userService } from "./user";
+import { AppError } from "..";
 
 
 
 export const industriesRouter = new Elysia({
     prefix: "/industries"
 })
+.use(userService)
 .get("/", async ()=>{
     const query = db.query.industries.findMany({
+            orderBy: (industries, {asc}) => asc(industries.createdAt),
             where: eq(industries.isDeleted, false),
         })
     
@@ -20,14 +24,8 @@ export const industriesRouter = new Elysia({
     
         const cashIndustries = await redis.get("industries")
 
-        const nothing = await redis.keys("*")  // просто проверка всех ключей в redis
-        console.log(nothing)
-
 
         if(cashIndustries){
-            // return{
-            //     industries: JSON.parse(cashIndustries) as ind
-            // }
             return JSON.parse(cashIndustries) as ind
             
         }
@@ -38,32 +36,73 @@ export const industriesRouter = new Elysia({
     
         return dbIndustries
 
-    // await redis.del("industries"); 
 })
 
 
 
 
 .get("/:id", async ({params})=>{
-    return await db.query.industries.findFirst({
+    const response = await db.query.industries.findFirst({
         where: and(
             eq(industries.id, params.id),
             eq(industries.isDeleted, false),
         ),
-    }) ?? null
+    }) 
+
+    if(!response){
+        throw new AppError("Отрасль не найдена", 404, "NOT_FOUND")
+    }
+
+    return response ?? null
 }, {
     params: z.object({
         id: z.string()
     })
 })
-.post("/", async ({body})=>{
+
+
+.post("/", async ({body, session})=>{
+
+    const responce = await db.query.industries.findFirst({
+        where: and(
+            eq(industries.isDeleted,false),
+            eq(industries.name, body.name)
+        )
+    })
+    if(responce){
+        throw new AppError("Отрасль с таким именем уже существует",409,"CONFLICT")
+    }
+
     await db.insert(industries).values(body)
 
     await redis.del("industries"); 
 },{
     body: industriesSchema,
+    isAdmin: true
 })
-.put("/:id", async ({params, body})=>{
+.put("/:id", async ({params, body, session})=>{
+
+     const response = await db.query.industries.findFirst({
+        where: and(
+            eq(industries.id, params.id),
+            eq(industries.isDeleted, false),
+        ),
+    }) 
+
+    if(!response){
+        throw new AppError("Отрасль не найдена", 404, "NOT_FOUND")
+    }
+
+    const duplicat = await db.query.industries.findFirst({
+        where: and(
+            eq(industries.isDeleted,false),
+            eq(industries.name, body.name)
+        )
+    })
+    if(duplicat){
+        throw new AppError("Отрасль с таким именем уже существует",409,"CONFLICT")
+    }
+
     await db.update(industries).set(body).where(eq(industries.id, params.id))
 
     await redis.del("industries"); 
@@ -71,9 +110,21 @@ export const industriesRouter = new Elysia({
     body: industriesSchema,
     params: z.object({
         id: z.string()
-    })
+    }),
+    isAdmin: true
 }) 
-.delete("/:id", async ({params})=>{
+.delete("/:id", async ({params, session})=>{
+    const response = await db.query.industries.findFirst({
+        where: and(
+            eq(industries.id, params.id),
+            eq(industries.isDeleted, false),
+        ),
+    }) 
+
+    if(!response){
+        throw new AppError("Отрасль не найдена", 404, "NOT_FOUND")
+    }
+
     await db.update(industries).set({isDeleted: true}).where(eq(industries.id, params.id))
 
     await db.update(projects).set({isDeleted: true}).where(eq(projects.industriesId, params.id))
@@ -82,5 +133,6 @@ export const industriesRouter = new Elysia({
 },{
     params: z.object({
         id: z.string()
-    })
+    }),
+    isAdmin: true
 })

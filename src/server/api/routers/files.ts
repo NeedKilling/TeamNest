@@ -11,7 +11,7 @@ export const filesRouter = new Elysia({
 },{
     body: t.Object({
         file: t.File(),
-    })
+    }),
 })
 .get("/:id", async ({params ,set})=>{
     const metadata = await GetMetaData(params.id);

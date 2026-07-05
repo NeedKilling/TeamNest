@@ -10,7 +10,8 @@ export * from "./files"
 
 export const personnel = pg.pgTable("personnel",{
     ...commonFields,
-    fullName: pg.varchar("full_name",{length: 255}).notNull(),
+    firstName: pg.varchar("first_name",{length: 255}).notNull(),
+    lastName: pg.varchar("last_name",{length: 255}).notNull(),
     age: pg.integer("age").notNull(),
     city:pg.varchar("city",{length: 255}).notNull(),
     shortResume: pg.text("short_Resume").notNull(),

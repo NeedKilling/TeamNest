@@ -35,6 +35,9 @@ export const userService = new Elysia({
         }
         return{
             beforeHandle({session,status}){
+                if(!session?.user){
+                    return status(401,"Вы не авторизовались")
+                } 
                 if(session?.user.role !== "admin"){
                     return status(403, "Отказано")
                 }

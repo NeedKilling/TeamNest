@@ -1,15 +1,11 @@
-import { ProjectsForm } from "./projects-form";
-import { ProjectsList } from "./projects-list";
+import { api } from "@/server/api"
+import { ProjectsTable } from "./projects-table"
 
-export default function ProjectsPage(){
+export default async function AdminprojectsPage(){
+
+    const projects = (await api.projects.get()).data 
+    console.log(projects)
     return(
-        <div className="container h-[100vh] mx-auto bg-gray-300 flex flex-col align-center items-center gap-5">
-            <h1>Projects</h1>
-            <div className="flex gap-20">
-                 <ProjectsList/>
-                 <ProjectsForm/>
-            </div>
-           
-        </div>
+            <ProjectsTable initialData = {projects!}/>
     )
 }

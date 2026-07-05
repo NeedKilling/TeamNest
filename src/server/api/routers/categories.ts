@@ -1,11 +1,12 @@
-import { categoriesSchema } from "@/lib/schemas/catefories";
+import { categoriesSchema } from "@/lib/schemas/categories";
 import { db } from "@/server/db";
 import { categories , personnel} from "@/server/db/schema";
-import { and, eq } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 import Elysia from "elysia";
 import z from "zod/v4"
 import { userService } from "./user";
 import { redis } from "bun";
+import { AppError } from "..";
 
 
 
@@ -18,6 +19,7 @@ export const categoriesRouter = new Elysia({
 .get("/", async ()=>{
 
     const query = db.query.categories.findMany({
+        orderBy: (categories, {asc}) => asc(categories.createdAt),
         where: eq(categories.isDeleted, false),
     })
 
@@ -25,9 +27,6 @@ export const categoriesRouter = new Elysia({
 
     const cashCategories = await redis.get("categories")
     if(cashCategories){
-        // return{
-        //     categories: JSON.parse(cashCategories) as cat
-        // }
         return JSON.parse(cashCategories) as cat
     }
 
@@ -36,15 +35,12 @@ export const categoriesRouter = new Elysia({
 
 
     return dbCategories
-    // return await db.query.categories.findMany({
-    //     where: eq(categories.isDeleted, false),
-    // })
 })
 
 
 
 .get("/:id", async ({params})=>{
-    return await db.query.categories.findFirst({
+     const response = await db.query.categories.findFirst({
         where: and(
             eq(categories.id, params.id),
             eq(categories.isDeleted, false),
@@ -54,7 +50,13 @@ export const categoriesRouter = new Elysia({
                 where: eq(personnel.isDeleted, false)
             }
         }
-    }) ?? null
+    }) 
+
+    if(!response){
+            throw new AppError("Категория не найдена", 404, "NOT_FOUND")
+    }
+
+    return response ?? null
 }, {
     params: z.object({
         id: z.string()
@@ -65,6 +67,16 @@ export const categoriesRouter = new Elysia({
 
 .post("/", async ({body,session})=>{
 
+    const responce = await db.query.categories.findFirst({
+        where: and(
+            eq(categories.isDeleted,false),
+            eq(categories.name, body.name)
+        )
+    })
+    if(responce){
+        throw new AppError("Категория с таким именем уже существует",409,"CONFLICT")
+    }
+
     await db.insert(categories).values(body)
 
 
@@ -72,15 +84,34 @@ export const categoriesRouter = new Elysia({
 
 },{
     body: categoriesSchema,
-    // isAdmin: true,
+    isAdmin: true,
 })
 
+.put("/:id", async ({params, body, session})=>{
+    const response = await db.query.categories.findFirst({
+        where: and(
+            eq(categories.id, params.id ),
+            eq(categories.isDeleted, false ),
+        ) 
+    })
+
+    if(!response){
+        throw new AppError("Категория не найдена", 404, "NOT_FOUND")
+    }
 
 
-
-
-
-.put("/:id", async ({params, body})=>{
+    const duplicat = await db.query.categories.findFirst({
+        where: and(
+            eq(categories.isDeleted,false),
+            eq(categories.name, body.name),
+            
+        )
+    })
+    console.log(duplicat)
+    if(duplicat){
+        throw new AppError("Категория с таким именем уже существует",409,"CONFLICT")
+    }
+    
     await db.update(categories).set(body).where(eq(categories.id, params.id))
 
     await redis.del("categories"); 
@@ -88,9 +119,21 @@ export const categoriesRouter = new Elysia({
     body: categoriesSchema,
     params: z.object({
         id: z.string()
-    })
+    }),
+    isAdmin: true
 }) 
-.delete("/:id", async ({params})=>{
+.delete("/:id", async ({params, session})=>{
+    const response = await db.query.categories.findFirst({
+        where: and(
+            eq(categories.id, params.id ),
+            eq(categories.isDeleted, false ),
+        ) 
+    })
+
+    if(!response){
+        throw new AppError("Категория не найдена", 404, "NOT_FOUND")
+    }
+
     await db.update(categories).set({isDeleted: true}).where(eq(categories.id, params.id))
     await db.update(personnel).set({isDeleted: true}).where(eq(personnel.categoriesId, params.id))
 
@@ -98,5 +141,6 @@ export const categoriesRouter = new Elysia({
 },{
     params: z.object({
         id: z.string()
-    })
+    }),
+    isAdmin: true
 })

@@ -30,6 +30,7 @@ export default async function Home() {
               <p>{item.name}</p>
               <p>{item.stage}</p>
               <p>{item.startDate.toLocaleDateString()}</p>
+              {/* <p>{item.}</p> */}
               <img className = "w-100 mx-auto " src={item.image ? imgUrl+item.image : "/noImage.png"} alt="" />
           </div>
           )

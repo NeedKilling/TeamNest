@@ -71,6 +71,20 @@
       "when": 1782242204661,
       "tag": "0009_peaceful_tigra",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1782750593366,
+      "tag": "0010_past_iceman",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1782750706333,
+      "tag": "0011_wild_roxanne_simpson",
+      "breakpoints": true
     }
   ]
 }

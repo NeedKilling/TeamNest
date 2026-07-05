@@ -7,8 +7,8 @@ const ContactSchema = z.array(z.object({
 .default([]);
 
 export const personnelSchema = z.object({
-    fullName: z.string({message: "Введите ФИО"})
-    .min(5,"Сликом коротко"),
+    firstName: z.string({message: "Введите имя"}).min(2,"Имя должно иметь миниммум 2 буквы"),
+    lastName: z.string({message: "Введите Фамилию"}),
     age: z.number({message: "Введите возраст"}),
     city: z.string({message: "Введите город"}),
     shortResume: z.string({message: "Введите резюме"}),
