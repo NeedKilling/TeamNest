@@ -4,6 +4,7 @@ import {commonFields} from "./utils"
 
 export * from "./auth-schema"
 export * from "./files"
+export * from "./feedback"
 
 
 

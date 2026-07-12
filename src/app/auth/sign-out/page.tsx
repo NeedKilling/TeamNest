@@ -11,7 +11,8 @@ export default function SignOut(){
         authClient.signOut({
             fetchOptions:{
                 onSuccess: ()=>{
-                    redirect("/")
+                    router.replace("/")
+                    router.refresh();
                 }
             }
         })

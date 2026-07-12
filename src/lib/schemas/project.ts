@@ -1,7 +1,7 @@
 import z from "zod/v4"
 
 export const stageEnum = z.enum(['Idea', 'Realization', 'Completed']);                 
-
+export type Stage = z.infer<typeof stageEnum>
 
 export const projectsSchema = z.object({
     name: z.string({message: "Введите название проекта"}).min(3,{message: "минимум три символа"}),
@@ -14,6 +14,11 @@ export const projectsSchema = z.object({
     image: z.string().optional().nullable()
 })
 
+export const stageLabels: Record<Stage, string> = {
+  Idea: "Идея",
+  Realization: "Реализация",
+  Completed: "Завершено"
+}
 
 export const projectsSchemaForServer = z.preprocess(
   (body: any) => ({

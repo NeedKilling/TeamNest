@@ -1,4 +1,6 @@
 import { createAuthClient } from "better-auth/react"
+import { inferAdditionalFields } from "better-auth/client/plugins";
+import type {auth} from "@/server/auth/auth"
 
 let origin =''
 
@@ -7,5 +9,6 @@ if(typeof window !== "undefined"){
 }
 export const authClient = createAuthClient({
     /** The base URL of the server (optional if you're using the same domain) */
-    baseURL: origin
+    baseURL: origin,
+    plugins: [inferAdditionalFields<typeof auth>()]
 })

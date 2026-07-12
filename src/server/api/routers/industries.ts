@@ -106,6 +106,7 @@ export const industriesRouter = new Elysia({
     await db.update(industries).set(body).where(eq(industries.id, params.id))
 
     await redis.del("industries"); 
+    await redis.del("projects");
 },{
     body: industriesSchema,
     params: z.object({
@@ -130,6 +131,7 @@ export const industriesRouter = new Elysia({
     await db.update(projects).set({isDeleted: true}).where(eq(projects.industriesId, params.id))
 
     await redis.del("industries"); 
+    await redis.del("projects");
 },{
     params: z.object({
         id: z.string()

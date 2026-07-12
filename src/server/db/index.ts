@@ -10,4 +10,3 @@ const client = new SQL(process.env.DATABASE_URL!,{
 export const db = drizzle(client,{
     schema: schema,
 });
-

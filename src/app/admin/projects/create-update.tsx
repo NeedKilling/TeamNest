@@ -153,7 +153,7 @@ export function CreateUpdateProjects({projects}: {projects?: Projects}){
                             {(field)=>(
                                 <div>
                                     <p>Название</p>
-                                    <Input className="mt-2" value={field.state.value} onChange={(e)=> field.handleChange(e.target.value)}  
+                                    <Input required className="mt-2" value={field.state.value} onChange={(e)=> field.handleChange(e.target.value)}  
                                     placeholder="Введите Название" 
                                     errors = {Array.from(new Set(field.state.meta.errors.flatMap((e)=>e?.message ?? "")))}/>
                                     {/* {field.state.meta.errors.map((err)=><p className="text-red-500" key={err?.message}>{err?.message}</p>)} */}
@@ -171,7 +171,7 @@ export function CreateUpdateProjects({projects}: {projects?: Projects}){
                             {(field)=>(
                                 <div>
                                     <p>Описание</p>
-                                    <Textarea className="mt-2 h-25  " value={field.state.value} onChange={(e)=> field.handleChange(e.target.value)}
+                                    <Textarea required className="mt-2 h-25 resize-none " value={field.state.value} onChange={(e)=> field.handleChange(e.target.value)}
                                         placeholder="Введите описание стартапа" 
                                         errors = {Array.from(new Set(field.state.meta.errors.flatMap((e)=>e?.message ?? "")))} />
                                         {/* {field.state.meta.errors.map((err)=><p className="text-red-500" key={err?.message}>{err?.message}</p>)} */}
@@ -190,7 +190,7 @@ export function CreateUpdateProjects({projects}: {projects?: Projects}){
                             {(field)=>(
                                 <div>
                                     <p>Отрасли стартапа</p>
-                                    <Select onValueChange={(value)=>{field.handleChange(value)}}
+                                    <Select required onValueChange={(value)=>{field.handleChange(value)}}
                                              value={field.state.value}
                                         >
                                         <SelectTrigger className="w-full mt-2">
@@ -222,7 +222,7 @@ export function CreateUpdateProjects({projects}: {projects?: Projects}){
                             {(field)=>(
                                 <div>
                                     <p>Стадии стартапа</p>
-                                    <Select onValueChange={(value)=>{field.handleChange(value as "Idea" | "Realization" | "Completed")}}
+                                    <Select required onValueChange={(value)=>{field.handleChange(value as "Idea" | "Realization" | "Completed")}}
                                              value={field.state.value}
                                             >
                                         <SelectTrigger className="w-full mt-2">
@@ -255,7 +255,7 @@ export function CreateUpdateProjects({projects}: {projects?: Projects}){
                             {(field)=>(
                                <div>
                                     <p>Введите дату создания стартапа</p>
-                                    <Popover>
+                                    <Popover >
                                         <PopoverTrigger asChild>
                                             <Button
                                                 variant="outline"
@@ -268,7 +268,7 @@ export function CreateUpdateProjects({projects}: {projects?: Projects}){
                                             </Button>
                                         </PopoverTrigger>
                                         <PopoverContent className="w-auto p-0">
-                                            <Calendar locale={ru} mode="single" selected={field.state.value} onSelect={(date)=>{
+                                            <Calendar required locale={ru} mode="single" selected={field.state.value} onSelect={(date)=>{
                                                     field.handleChange(date!)}}
                                                     />
                                         </PopoverContent>
@@ -291,7 +291,7 @@ export function CreateUpdateProjects({projects}: {projects?: Projects}){
                             {(field)=>(
                                 <div>
                                     <p>Сылка</p>
-                                    <Input className="mt-2" value={field.state.value} onChange={(e)=> field.handleChange(e.target.value)}   onBlur={() => field.handleBlur()}
+                                    <Input required className="mt-2" value={field.state.value} onChange={(e)=> field.handleChange(e.target.value)}   onBlur={() => field.handleBlur()}
                                     placeholder="Введите сылку на стартап" 
                                     errors = {Array.from(new Set(field.state.meta.errors.flatMap((e)=>e?.message ?? "")))}/>
 

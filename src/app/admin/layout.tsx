@@ -19,7 +19,7 @@ export default async function AdminLayout({children}:{children: React.ReactNode}
 
 
     return(
-       <div className="">
+       <div className="pt-[85px]">
             <div className="text-center p-5 text-4xl">ADMIN</div>
             
             <div className="pl-60 p-10">
