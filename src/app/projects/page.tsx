@@ -5,12 +5,18 @@ import { Stage, stageLabels } from "@/lib/schemas/project";
 import { api } from "@/server/api";
 import { Search } from "lucide-react";
 import ProjectsList from "./projects-list";
+import { headers as nextHeaders} from "next/headers"
 
 export default async function Projects(){
+    
+
+
     const projects = (await api.projects.get()).data 
 
     const industries = (await api.industries.get()).data
     
+    const favorite = (await api.favoriteProjects.get({headers: await nextHeaders()})).data
+    console.log(favorite)
 
     return(
         <main className="container w-[1312px] mx-auto">
@@ -63,7 +69,7 @@ export default async function Projects(){
                 </div>
             </div>
 
-            <ProjectsList initialData={projects!}/>
+            <ProjectsList initialData={projects!} favorite = {favorite ?? []}/>
        </main>
     )
 }

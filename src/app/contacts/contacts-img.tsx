@@ -1,3 +1,5 @@
+import ContactsCard from "@/components/ui/contacts-card"
+
 export type Contacts = {  
         title: string,
         subTitle: string,
@@ -8,7 +10,7 @@ export type Contacts = {
 export default function ContactsImg(){
     
 
-    const AboutList:Contacts[] = [
+    const Contacts:Contacts[] = [
         {title: "Лобов Александр",
         subTitle:"Технический директор",
         imgSrc: "/img/1.jpg",
@@ -25,8 +27,10 @@ export default function ContactsImg(){
     ]
 
     return(
-        <div>
-
-        </div>
+        <div className="py-12 flex justify-center gap-32 container w-[1312px] mx-auto ">
+            {Contacts.map((item,index)=>(
+                <ContactsCard key={index} item={item}/>
+            ))}
+        </div>  
     )
 }

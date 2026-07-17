@@ -1,6 +1,6 @@
 import { projectsSchema, projectsSchemaForServer } from "@/lib/schemas/project";
 import { db } from "@/server/db";
-import { industries, projects } from "@/server/db/schema";
+import { favoriteProjects, industries, projects } from "@/server/db/schema";
 import { and, eq, ne } from "drizzle-orm";
 import Elysia from "elysia";
 import z from "zod/v4";
@@ -55,6 +55,48 @@ export const projectsRouter = new Elysia({
     ////
 })
 
+
+.get("/my-projects", async ({session})=>{
+    const response = db.query.projects.findMany({
+        orderBy: (projects, {asc}) => asc(projects.createdAt),
+        where: and(
+            eq(projects.userId, session?.user.id!),
+            eq(projects.isDeleted, false)
+        ),
+        with: {
+            industries: true
+        },
+    })
+
+    if((await response).length == 0){
+        throw new AppError("Проекты не найдены или вы их еще не создали", 404, "NOT_FOUND")
+    }
+    return response
+})
+
+.get("/favorite",async ({session}) => {
+    const response = await db.query.favoriteProjects.findMany({
+        orderBy: (favoriteProjects, {asc}) => asc(favoriteProjects.createdAt),
+        where: and(
+            eq(favoriteProjects.userId, session?.user?.id!),
+            eq(favoriteProjects.isDeleted, false)
+        ),
+        with: {
+            project: {
+                with:{
+                    industries: true
+                }
+            },
+            
+        }  
+    })
+
+    
+    return response ?? null
+},{
+    isSignedId: true
+})
+
 .get("/:id",async ({params})=>{
     const response = await db.query.projects.findFirst({
         where: and(
@@ -95,19 +137,20 @@ export const projectsRouter = new Elysia({
         stage: body.stage,
         startDate: body.startDate,
         linkProject: body.linkProject,
-        image: body.image || null
+        image: body.image || null,
+        userId: session?.user.id!
     })
 
     await redis.del("projects")
 },{
     body: projectsSchemaForServer,
-    isAdmin: true
+    isSignedId: true
 })
 
 
 
 .put("/:id", async ({params, body, session})=>{
-     const response = await db.query.projects.findFirst({
+    const response = await db.query.projects.findFirst({
         where: and(
             eq(projects.id, params.id ),
             eq(projects.isDeleted, false ),
@@ -130,6 +173,11 @@ export const projectsRouter = new Elysia({
         throw new AppError("Стартап с таким именем уже существует",409,"CONFLICT")
     }
 
+    if(response.userId !== session?.user.id){
+        throw new AppError("Нет прав на редактирование этого проекта", 403, "FORBIDDEN");
+    }
+
+
 
     await db.update(projects).set({
         name: body.name,
@@ -147,7 +195,7 @@ export const projectsRouter = new Elysia({
     params: z.object({
         id: z.string()
     }),
-    isAdmin: true
+    isSignedId: true
 }) 
 
 
@@ -163,7 +211,9 @@ export const projectsRouter = new Elysia({
     if(!response){
         throw new AppError("Стартап не найден", 404, "NOT_FOUND")
     }
-
+    if(response.userId !== session?.user.id){
+        throw new AppError("Нет прав на редактирование этого проекта", 403, "FORBIDDEN");
+    }
 
     await db.update(projects).set({isDeleted: true}).where(eq(projects.id, params.id))
 
@@ -172,5 +222,5 @@ export const projectsRouter = new Elysia({
     params: z.object({
         id: z.string()
     }),
-    isAdmin: true
+    isSignedId: true
 })

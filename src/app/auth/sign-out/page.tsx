@@ -1,4 +1,5 @@
 "use client"
+import { Spinner } from "@/components/ui/spinner"
 import { authClient } from "@/lib/client/auth-client"
 import { redirect } from "next/navigation"
 import { useRouter } from "next/navigation"
@@ -11,8 +12,9 @@ export default function SignOut(){
         authClient.signOut({
             fetchOptions:{
                 onSuccess: ()=>{
-                    router.replace("/")
-                    router.refresh();
+                    // router.push("/")
+                    // router.refresh();
+                    window.location.href = "/"
                 }
             }
         })
@@ -20,5 +22,9 @@ export default function SignOut(){
     },[])
 
 
-    return null
+    return (
+        <div className="flex gap-5 min-h-screen items-center justify-center text-base text-tGray-sub">
+            Выход из системы... <Spinner/>
+        </div>
+    )
 }

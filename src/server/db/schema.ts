@@ -1,31 +1,33 @@
 import { relations } from "drizzle-orm";
 import * as pg from "drizzle-orm/pg-core";
 import {commonFields} from "./utils"
+import { user } from "./auth-schema";
 
 export * from "./auth-schema"
 export * from "./files"
 export * from "./feedback"
+export * from "./favorite"
 
 
 
 
 export const personnel = pg.pgTable("personnel",{
     ...commonFields,
-    firstName: pg.varchar("first_name",{length: 255}).notNull(),
-    lastName: pg.varchar("last_name",{length: 255}).notNull(),
-    age: pg.integer("age").notNull(),
-    city:pg.varchar("city",{length: 255}).notNull(),
-    shortResume: pg.text("short_Resume").notNull(),
-    education: pg.text("education").notNull(),
-    contacts: pg.jsonb("contacts").notNull().default([]),
+    age: pg.integer("age"),
+    city:pg.varchar("city",{length: 255}),
+    shortResume: pg.text("short_Resume"),
+    education: pg.text("education"),
+   
+    skills: pg.varchar("skills", {length: 255}).array().default([]),
 
+    specializationId: pg.varchar("specialization_id",{length: 255}).references(()=>specialization.id),
+    categoriesId:pg.varchar("categories_id", {length: 255}).references(()=>categories.id),
 
-    skills: pg.varchar("skills", {length: 255}).array().notNull().default([]),
+    image: pg.varchar("image" ,{length: 255}),
+    telegram: pg.varchar("telegram", {length:255}),
+    vk: pg.varchar("vk", {length:255}),
 
-    specializationId: pg.varchar("specialization_id",{length: 255}).notNull().references(()=>specialization.id),
-    categoriesId:pg.varchar("categories_id", {length: 255}).notNull().references(()=>categories.id),
-
-    image: pg.varchar("image" ,{length: 255})
+    userId: pg.varchar("userId", {length: 255}).notNull(),
 });
 
 export const specialization = pg.pgTable("specialization",{
@@ -45,6 +47,10 @@ export const personnelRealations = relations(personnel, ({one}) => ({
     categories: one(categories,{
         references: [categories.id],
         fields: [personnel.categoriesId]
+    }),
+    user: one(user,{
+        references: [user.id],
+        fields: [personnel.userId]
     })
 }))
 
@@ -73,7 +79,9 @@ export const projects  = pg.pgTable("projects",{
     stage: stageEnum("stage").default('Idea'), //'Idea'
     startDate: pg.timestamp("start_date").notNull(),
     linkProject: pg.text("link_project").notNull(),
-    image: pg.varchar("image", {length: 255})
+    image: pg.varchar("image", {length: 255}),
+
+    userId: pg.varchar("user_id").notNull().references(() => user.id)
     
 }) 
 
@@ -87,6 +95,10 @@ export const projectsRealations = relations(projects, ({one}) => ({
         references: [industries.id],
         fields: [projects.industriesId]
     }),
+    user: one(user,{
+        references: [user.id],
+        fields: [projects.userId]
+    })
 }))
 export const industriesRealations = relations(industries, ({many})=>({
     projects: many(projects)

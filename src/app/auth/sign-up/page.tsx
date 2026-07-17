@@ -11,11 +11,11 @@ import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Checkbox } from "@/components/ui/checkbox"
-import { redirect } from "next/navigation"
+import { redirect,useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 export default function SignUp(){
-
+    const router = useRouter()
     const schema = z.object({
         name: z.string(),
         lastName: z.string(),
@@ -36,7 +36,7 @@ export default function SignUp(){
         },
         onSuccess: ()=>{
             toast.success("Регистрация успешна")
-            redirect("/auth/sign-in")
+            router.push("/profile")
         },
         onError: (err: Error)=>{
             toast.error(`Ошибка регистрации: 

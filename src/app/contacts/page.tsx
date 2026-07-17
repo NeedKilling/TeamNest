@@ -1,3 +1,5 @@
+import ContactsImg from "./contacts-img";
+
 export default function Contacts(){
     return(
         
@@ -21,7 +23,7 @@ export default function Contacts(){
                 </div>
 
                 
-                <div className=" w-full relative pb-12">
+                <div className=" w-full relative pb-12 isolate">
                         <div className="w-[980px] mx-auto text-tBlack-main text-5xl font-medium flex flex-col gap-4 items-center relative z-10">
                             <p className="">Создай свое будущее вместе с </p>
                             <img src="/img/Logo (2).png" alt="" />
@@ -34,10 +36,8 @@ export default function Contacts(){
                        
                        
                    
-
-                <div className="py-12 pt- container w-[1312px] mx-auto ">
-                    dasjddadad
-                </div>   
+            <ContactsImg/>
+                 
             </section>
         </main>
         

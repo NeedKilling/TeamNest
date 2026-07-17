@@ -8,6 +8,8 @@ import { treaty } from "@elysiajs/eden";
 import { auth } from "../auth/auth";
 import { filesRouter } from "./routers/files";
 import { feedbackRouter } from "./routers/feedback";
+import { favoritesProjectsRouter } from "./routers/favorite-project";
+import { favoritesPersonnelRouter } from "./routers/favorite-personnel";
 
 
 export class AppError extends Error {
@@ -64,6 +66,8 @@ export const app = new Elysia({
 .use(categoriesRouter)
 .use(filesRouter)
 .use(feedbackRouter)
+.use(favoritesProjectsRouter)
+.use(favoritesPersonnelRouter)
 
 .get("/", ()=>{
     return "hello"

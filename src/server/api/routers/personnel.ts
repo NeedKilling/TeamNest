@@ -1,108 +1,151 @@
-import { personnelSchema } from "@/lib/schemas/personnel";
-import { db } from "@/server/db";
-import { personnel } from "@/server/db/schema";
-import { redis } from "bun";
-import { and, eq, ne } from "drizzle-orm";
-import Elysia from "elysia";
-import z from "zod/v4"
-import { userService } from "./user";
-import { AppError } from "..";
+    import { personnelSchema } from "@/lib/schemas/personnel";
+    import { db } from "@/server/db";
+    import { personnel } from "@/server/db/schema";
+    import { redis } from "bun";
+    import { and, eq, isNotNull, ne } from "drizzle-orm";
+    import Elysia from "elysia";
+    import z from "zod/v4"
+    import { userService } from "./user";
+    import { AppError } from "..";
 
 
 
-export const personnelRouter = new Elysia({
-    prefix: "/personnel"
-})
 
-.use(userService)
-.get("/", async ()=>{
-    const query = db.query.personnel.findMany({
-        orderBy: (personnel, {asc}) => asc(personnel.createdAt),
-        where: eq(personnel.isDeleted, false),
+    export const personnelRouter = new Elysia({
+        prefix: "/personnel"
     })
 
-    type pers = Awaited<ReturnType<typeof query.execute>>
-
-    const cashPersonnel = await redis.get("personnel")
-    if(cashPersonnel){
-        return JSON.parse(cashPersonnel) as pers
-    }
-
-    const dbPersonnel = await query.execute()
-    await redis.set("personnel", JSON.stringify(dbPersonnel), "EX", 60*60*24)
-
-    return dbPersonnel
-})
-
-
-
-.get("/:id", async ({params})=>{
-    const response = await db.query.personnel.findFirst({
-        where: and(
-            eq(personnel.id, params.id),
-            eq(personnel.isDeleted, false),
-        )
+    .use(userService)
+    .get("/", async ({session})=>{
+        const response = await db.query.personnel.findFirst({
+            where: eq(personnel.id, session?.user.personnelId!),
+            with: {
+                categories: true,
+                specialization: true,
+                user: true
+            }
+        })
+        if(!response){
+            throw new AppError("Пользователь не найден", 404, "NOT_FOUND")
+        }
+        return response ?? null
+    
     })
-    if(!response){
-        throw new AppError("Пользователь не найден", 404, "NOT_FOUND")
-    }
 
-    return response ?? null
-}, {
-    params: z.object({
-        id: z.string()
+    .get("/all", async ()=>{
+        const query = db.query.personnel.findMany({
+            orderBy: (personnel, {asc}) => asc(personnel.createdAt),
+            where: and(
+                eq(personnel.isDeleted, false),
+                ne(personnel.shortResume,""),
+                isNotNull(personnel.shortResume),
+
+                ne(personnel.education,""),
+                isNotNull(personnel.education)
+            ),
+             with: {
+                categories: true,
+                specialization: true,
+                user: true
+            }
+        })
+
+        type pers = Awaited<ReturnType<typeof query.execute>>
+
+        const cashPersonnel = await redis.get("personnel")
+        if(cashPersonnel){
+            return JSON.parse(cashPersonnel) as pers
+        }
+
+        const dbPersonnel = await query.execute()
+        await redis.set("personnel", JSON.stringify(dbPersonnel), "EX", 60*60*24)
+
+        return dbPersonnel
     })
-})
 
 
 
-.post("/", async ({body})=>{
-    await db.insert(personnel).values(body)
+    .get("/:id", async ({params,session})=>{
+        const response = await db.query.personnel.findFirst({
+            where: and(
+                eq(personnel.id, params.id),
+            ),
+            with: {
+                categories: true,
+                specialization: true,
+                user: true
+            }
+        })
+        if(!response){
+            throw new AppError("Пользователь не найден", 404, "NOT_FOUND")
+        }
 
-    await redis.del("personnel")
-},{
-    body: personnelSchema,
-})
-
-.put("/:id", async ({params, body, session})=>{
-    const response = await db.query.personnel.findFirst({
-        where: and(
-            eq(personnel.id, params.id),
-            eq(personnel.isDeleted, false),
-            ne(personnel.id, params.id) // !!!! 
-        )
+        return response ?? null
+    }, {
+        params: z.object({
+            id: z.string()
+        })
     })
-    if(!response){
-        throw new AppError("Пользователь не найден", 404, "NOT_FOUND")
-    }
 
-    await db.update(personnel).set(body).where(eq(personnel.id, params.id))
 
-    await redis.del("personnel")
-},{
-    body: personnelSchema,
-    params: z.object({
-        id: z.string()
-    }),
-    isSignedId: true
-}) 
-.delete("/:id", async ({params})=>{
 
-    const response = await db.query.personnel.findFirst({
-        where: and(
-            eq(personnel.id, params.id),
-            eq(personnel.isDeleted, false),
-        )
-    })
-    if(!response){
-        throw new AppError("Пользователь не найден", 404, "NOT_FOUND")
-    }
+    // .post("/", async ({body,session})=>{
+    //     await db.insert(personnel).values(body)
 
-    await db.update(personnel).set({isDeleted: true}).where(eq(personnel.id, params.id))
+    //     await redis.del("personnel")
+    // },{
+    //     body: personnelSchema,
+    // })
 
-    await redis.del("personnel")
-},{
-    params: z.object({
-        id: z.string()
-    })
-})
+    .put("/:id", async ({params, body, session})=>{
+        // const response = await db.query.personnel.findFirst({
+        //     where: and(
+        //         eq(personnel.id, params.id),
+        //         ne(personnel.id, params.id) // !!!! 
+        //     )
+        // })
+        // if(!response){
+        //     throw new AppError("Пользователь не найден", 404, "NOT_FOUND")
+        // }
+
+        const {userId, ...notUserId} = body
+        await db.update(personnel).set({
+            ...notUserId,
+            specializationId: notUserId.specializationId || null,
+            categoriesId: notUserId.categoriesId || null
+        })
+            .where(and(
+                eq(personnel.id, params.id),
+                eq(personnel.id, session?.user?.personnelId!)
+            ))
+
+        await redis.del("personnel")
+    },{
+        body: personnelSchema,
+        params: z.object({
+            id: z.string()
+        }),
+        isSignedId: true
+    }) 
+
+
+    // .delete("/:id", async ({params})=>{
+
+    //     const response = await db.query.personnel.findFirst({
+    //         where: and(
+    //             eq(personnel.id, params.id),
+    //             eq(personnel.isDeleted, false),
+    //         )
+    //     })
+    //     if(!response){
+    //         throw new AppError("Пользователь не найден", 404, "NOT_FOUND")
+    //     }
+
+    //     await db.update(personnel).set({isDeleted: true}).where(eq(personnel.id, params.id))
+
+    //     await redis.del("personnel")
+    // },{
+    //     params: z.object({
+    //         id: z.string()
+    //     })
+    // })

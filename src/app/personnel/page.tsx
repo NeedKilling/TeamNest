@@ -3,11 +3,18 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { api } from "@/server/api"
 import { Search } from 'lucide-react';
 import PersonnelList from "./personnel-list";
+import { headers as nextHeaders} from "next/headers"
 
 export default async function Personnel(){
 
     const categories = (await api.categories.get()).data
     const specializations = (await api.specialization.get()).data
+
+    const personnel = (await api.personnel["all"].get()).data
+
+
+    const favorite = (await api.favoritePersonnel.get({headers: await nextHeaders()})).data
+    console.log(favorite)
 
     return(
        <main className="container w-[1312px] mx-auto">
@@ -60,7 +67,7 @@ export default async function Personnel(){
                 </div>
             </div>
 
-            <PersonnelList/>
+            <PersonnelList initialData={personnel!} favorite = {favorite ?? []}/>
        </main>
     )
 }

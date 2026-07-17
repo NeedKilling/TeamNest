@@ -1,12 +1,13 @@
 import { relations } from "drizzle-orm";
 import { pgTable, text, timestamp, boolean, index, pgEnum ,varchar} from "drizzle-orm/pg-core";
+import { personnel } from "./schema";
 
 export const userRolesEnum = pgEnum("user_roles",["user", "admin"])
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
-  last_name: text("last_name").notNull(),
+  lastName: text("last_name").notNull(),
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
   image: text("image"),
@@ -14,8 +15,9 @@ export const user = pgTable("user", {
   updatedAt: timestamp("updated_at")
     .$onUpdate(() => new Date())
     .notNull(),
-  role: userRolesEnum('roles').notNull().default('user')
+  role: userRolesEnum('roles').notNull().default('user'),
 
+  personnelId: varchar("personnel_id").references(()=> personnel.id)
 });
 
 export const session = pgTable(

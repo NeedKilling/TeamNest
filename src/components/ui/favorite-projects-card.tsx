@@ -7,24 +7,21 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "./button";
 import Link from "next/link";
 
-export default function ProjectsCard({item, isFavorite, toggle}:
+export default function FavoriteProjectsCard({item, isFavorite, toggle}:
     {item: Projects, isFavorite: boolean,toggle: (projectId: string, isFavorite: boolean) => void}){
-
     const imgUrl = "http://localhost:3000/api/files/"
     
-    const handleClick = (e: React.MouseEvent)=>{
+   const handleClick = (e: React.MouseEvent)=>{
         e.stopPropagation() 
         toggle(item.id, isFavorite)
     }   
-
-
     return(
         
 
         <Dialog >
             <DialogTrigger asChild>
-                <div className="relative w-[310px] max-h-[483px] bg-gray-component border border-gray-border rounded-[16px] text-tBlack-main">
-                    <img className = "w-full h-[256px] object-fill rounded-t-[16px]" src={imgUrl+item.image} 
+                <div className="relative w-[300px] h-[300px] bg-white-component border-gray-border border shadow-custom2 rounded-[16px] text-tBlack-main">
+                    <img className = "w-full h-[180px] object-cover rounded-t-[16px]" src={imgUrl+item.image} 
                         onError={(e)=>e.currentTarget.src = "/img/noImage.png"} alt="project image" 
                          ref={(el) => {
                             if (el && el.complete && el.naturalWidth === 0) {
@@ -36,11 +33,11 @@ export default function ProjectsCard({item, isFavorite, toggle}:
                     <div className="p-4  flex flex-col gap-4 ">
                         <div className="flex flex-col gap-[6px] relative">
                             <div className="flex justify-between">
-                                <h3 className="text-xl font-medium ">{item.name}</h3>
+                                <h3 className="text-base">{item.name}</h3>
                                 <Star onClick={handleClick} className={`${isFavorite ? "fill-yellow-400 text-yellow-400" : ""} cursor-pointer`}/>
                             </div>
-                            <p className="min-h-[96px] line-clamp-4 text-base font-normal text-tGray-sub">{item.description} Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora, minima velit commodi vel, officia enim eum ipsum recusandae, sapiente exercitationem fuga in non placeat natus! Debitis, quidem? Voluptatem, quaerat non?</p>
-                            <div className="absolute inset-x-0 bottom-0 h-[36px] bg-gradient-to-b from-transparent to-gray-component pointer-events-none" />
+    
+                           
                         </div>
                         <Separator/>
                         <div className="flex gap-2 items-center">
@@ -53,7 +50,7 @@ export default function ProjectsCard({item, isFavorite, toggle}:
                     </div>
 
 
-                    <div className="absolute top-4 right-4 bg-[#1C1C1C66] backdrop-blur-[10px] text-[14px] text-tWhite-main px-[6px] py-1 rounded-[16px]">{item.industries.name}</div>
+                    <div className="absolute top-0 right-0 rounded-[16px] rounded-br-[0px] rounded-tl-[0px] border border-[#ECEDEE66] bg-[#1C1C1C66] backdrop-blur-[10px] text-[14px] text-tWhite-main px-[6px] py-1 ">{item.industries.name}</div>
                 </div>
             </DialogTrigger>
             <DialogContent className="bg-lightGray-component !p-0 !max-w-155 ">
@@ -85,9 +82,10 @@ export default function ProjectsCard({item, isFavorite, toggle}:
                     </div>
                     
 
-                    <div className="flex justify-end">
+                    {/* <div className="flex justify-end">
                         <Button className="bg-black-component h-[45px] px-4 py-3 text-tWhite-main ">Смотреть вакансии</Button>
-                    </div>
+                    </div> */}
+
                 
                 </div>
                     

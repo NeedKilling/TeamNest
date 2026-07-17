@@ -32,7 +32,7 @@ export default function SignIn(){
         onSuccess: ()=>{
             toast.success("Авторизация успешна")
             // redirect("/")
-            router.push("/")
+            router.push("/profile")
         },
         onError: (err: Error)=>{
             toast.error(`Ошибка авторизации: 

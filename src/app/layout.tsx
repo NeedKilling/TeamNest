@@ -10,6 +10,7 @@ import {Questions} from "@/components/layout/questioins";
 import { auth } from "@/server/auth/auth";
 import {headers as nextHeaders} from "next/headers"
 import { Unbounded } from "next/font/google";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 
 const sfPro = localFont({
@@ -63,10 +64,13 @@ export default async function RootLayout({
         <QueryClientProvider>
           
           <Toaster richColors/>
-          <Header/>
-          {children}
-          <Questions/>
-          <Footer/>
+          <TooltipProvider>
+            <Header/>
+            {children}
+            <Questions/>
+            <Footer/>
+          </TooltipProvider>
+          
         </QueryClientProvider>  
       </body>
     </html>

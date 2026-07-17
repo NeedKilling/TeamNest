@@ -53,10 +53,10 @@ export default function HeaderAvatar({user}:{user: typeof authClient.$Infer.Sess
                         </div>
                     </DropdownMenuLabel>
 
-                    <DropdownMenuItem><Link className="flex gap-2 items-center"href={"/profile"}> <CircleUserRound /> Мой профиль</Link></DropdownMenuItem>
-                    <DropdownMenuItem><FolderOpen /> Мои проекты</DropdownMenuItem>
-                    <DropdownMenuItem><NotebookTabs /> Мои отклики</DropdownMenuItem>
-                    <DropdownMenuItem><Star /> Избранное</DropdownMenuItem>
+                    <DropdownMenuItem onClick={()=>setOpen(!open)}><Link className="flex gap-2 items-center" href={"/profile"}> <CircleUserRound /> Мой профиль</Link></DropdownMenuItem>
+                    <DropdownMenuItem onClick={()=>setOpen(!open)}><Link className="flex gap-2 items-center" href={"/profile/my-projects"}><FolderOpen /> Мои проекты </Link></DropdownMenuItem>
+                    <DropdownMenuItem onClick={()=>setOpen(!open)}><NotebookTabs /> Мои отклики</DropdownMenuItem>
+                    <DropdownMenuItem onClick={()=>setOpen(!open)}><Link className="flex gap-2 items-center" href={"/profile/favorite"}><Star /> Избранное</Link></DropdownMenuItem>
                     <DropdownMenuItem onClick={()=>setOpen(!open)} className="mt-2" variant="destructive"><Link className="flex gap-2 items-center" href={"/auth/sign-out"}><LogOutIcon />Выход</Link></DropdownMenuItem>
                     
                 </DropdownMenuGroup>
