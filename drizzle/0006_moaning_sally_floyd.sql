@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS "account" (
 	"updated_at" timestamp NOT NULL
 );
 
---> statement-breakpoint
+
 CREATE TABLE IF NOT EXISTS "session" (
 	"id" text PRIMARY KEY NOT NULL,
 	"expires_at" timestamp NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS "session" (
 	CONSTRAINT "session_token_unique" UNIQUE("token")
 );
 
---> statement-breakpoint
+
 CREATE TABLE IF NOT EXISTS "user" (
 	"id" text PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
@@ -39,7 +39,6 @@ CREATE TABLE IF NOT EXISTS "user" (
 	CONSTRAINT "user_email_unique" UNIQUE("email")
 );
 
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "verification" (
 	"id" text PRIMARY KEY NOT NULL,
 	"identifier" text NOT NULL,
@@ -49,7 +48,7 @@ CREATE TABLE IF NOT EXISTS "verification" (
 	"updated_at" timestamp NOT NULL
 );
 
---> statement-breakpoint
+
 DO $$
 BEGIN
     IF NOT EXISTS (
@@ -60,7 +59,7 @@ BEGIN
     END IF;
 END $$;
 
---> statement-breakpoint
+
 DO $$
 BEGIN
     IF NOT EXISTS (
@@ -71,11 +70,11 @@ BEGIN
     END IF;
 END $$;
 
---> statement-breakpoint
+
 CREATE INDEX IF NOT EXISTS "account_userId_idx" ON "account" USING btree ("user_id");
 
---> statement-breakpoint
+
 CREATE INDEX IF NOT EXISTS "session_userId_idx" ON "session" USING btree ("user_id");
 
---> statement-breakpoint
+
 CREATE INDEX IF NOT EXISTS "verification_identifier_idx" ON "verification" USING btree ("identifier");

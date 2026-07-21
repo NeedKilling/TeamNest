@@ -32,7 +32,7 @@
     
     })
 
-    .get("/all", async ()=>{
+    .get("/all", async (session)=>{
         const query = db.query.personnel.findMany({
             orderBy: (personnel, {asc}) => asc(personnel.createdAt),
             where: and(
@@ -50,15 +50,10 @@
             }
         })
 
-        type pers = Awaited<ReturnType<typeof query.execute>>
 
-        const cashPersonnel = await redis.get("personnel")
-        if(cashPersonnel){
-            return JSON.parse(cashPersonnel) as pers
-        }
 
         const dbPersonnel = await query.execute()
-        await redis.set("personnel", JSON.stringify(dbPersonnel), "EX", 60*60*24)
+
 
         return dbPersonnel
     })

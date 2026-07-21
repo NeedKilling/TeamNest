@@ -14,21 +14,32 @@ import { projectsSchema, stageEnum } from "@/lib/schemas/project"
 import { Projects } from "@/lib/types/projects"
 import { useForm } from "@tanstack/react-form"
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { CalendarIcon, Plus, TriangleAlert } from "lucide-react"
+import { CalendarIcon, Plus, TriangleAlert, X } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 import z from "zod/v4"
 import { format } from "date-fns";
 import { ru } from "date-fns/locale/ru"
+import Vacancy from "@/components/ui/vacansy"
+import VacanciesForm from "@/components/ui/vacancies-form"
+
+export const vacancy = z.object({
+  name: z.string(),
+  city: z.string(),
+  description: z.string()
+}) 
 
 export function CreateProjects(){
 
     const [isOpen, setIsOpen] = useState(false)
     const [step,setStep] = useState(0)
-
+    
+    const [vacancies, setVacancies] = useState<{ name: string; city: string; description: string }[]>([]);
+    const [newVacancy, setNewVacancy] = useState({ name: "", city: "", description: "" });
+    const [open, setOpen] = useState(false)
   
 
-
+    
 
     const createMutation = useMutation({
         mutationKey: ["createProjects"],
@@ -38,14 +49,32 @@ export function CreateProjects(){
                 const errorMessage = `${response.error.status} ${response.error.value.type || response.error.value.message || response.error.value.summary} `;
                 throw new Error(errorMessage);
             }
+            return response.data
 
         },
-        onSuccess: () => {
+        onSuccess: async (projectData) => {
+            const projectId = projectData.id;
+
+            if (vacancies.length > 0) {
+            try {
+                await Promise.all(vacancies.map(vac =>
+                    api.vacancies.post({ projectId, ...vac })
+                ));
+                    toast.success("Проект и вакансии созданы");
+                } catch {
+                    toast.error("Ошибка при создании вакансий");
+                }
+                } else {
+                    toast.success("Проект создан");
+                }
+
+
             queryClient.invalidateQueries({
                 queryKey: ["my-projects"]
             })
-            toast.success("Стартап успешно создан")
+            // toast.success("Стартап успешно создан")
             form.reset()
+            setVacancies([])
             setIsOpen(false)
             setStep(0)
         },
@@ -60,7 +89,7 @@ export function CreateProjects(){
     const form = useForm({
         defaultValues: {} as z.infer<typeof projectsSchema>,
         onSubmit: async ({value}) =>{
-            await createMutation.mutate(value)
+            await createMutation.mutateAsync(value)
         },
         
         
@@ -77,8 +106,14 @@ export function CreateProjects(){
             return (await api.industries.get()).data
         }
     })
+    const {data: specialization} = useQuery({
+        queryKey: ["specialization"],
+        queryFn: async ()=>{
+            return (await api.specialization.get()).data
+        }
+    })
     const stageEnumProjects = stageEnum.options
-
+    
 
 
     return(
@@ -92,7 +127,7 @@ export function CreateProjects(){
                     </button>
             </DialogTrigger>
             <DialogContent className = "min-h-85">
-                <DialogHeader className="text-center">
+                <DialogHeader className="text-center shrink-1">
                     {"Создание стартапа"}
 
                     <form.Subscribe>
@@ -117,7 +152,7 @@ export function CreateProjects(){
                     e.preventDefault()
                     form.handleSubmit()
                 }}
-                className="flex flex-col justify-between  gap-5"
+                className={"flex flex-col  justify-between gap-5 "}
                 >
                     {step === 0 && <>
                         <form.Field name="name"
@@ -281,7 +316,7 @@ export function CreateProjects(){
                                     <p>Загрузите фото</p>
                                     <div className = "flex justify-between gap-5">
                                         <Input className="mt-2" value={field.state.value ?? ""} onChange={(e)=> field.handleChange(e.target.value ?? "")} 
-                                            placeholder="Введите id изображения" 
+                                            placeholder="Необязательно" 
                                             errors = {Array.from(new Set(field.state.meta.errors.flatMap((e)=>e?.message ?? "")))}/>
 
                                         <ImageInput onChange={(e)=>field.handleChange(e)}/>
@@ -294,9 +329,15 @@ export function CreateProjects(){
                         </form.Field>
                     </>}
 
+                    {step === 3 &&
+                    
+                        <VacanciesForm specialization = {specialization!} vacancies ={vacancies} setVacancies = {setVacancies}/>
+
+                    }
+
                     <div className="flex gap-5 justify-between">
                         <Button type="button" onClick={()=>setStep(step-1)} disabled = {step===0} variant={"outline"}>Назад</Button>
-                        <Button className = {`${step === 2 ? "hidden" : "block"}`} type="button" onClick={()=>setStep(step+1)} disabled = {step===2}>Далее</Button>
+                        <Button className = {`${step === 3 ? "hidden" : "block"}`} type="button" onClick={()=>setStep(step+1)} disabled = {step===3}>Далее</Button>
                     </div>
 
                     <form.Subscribe>
@@ -306,7 +347,7 @@ export function CreateProjects(){
                                 
                                 <>
                                     
-                                {step == 2 && <Button className="absolute bottom-4 right-4"  disabled = { !state.canSubmit || createMutation.isPending || !state.isDirty}>
+                                {step == 3 && <Button className="absolute bottom-4 right-4"  disabled = { !state.canSubmit || createMutation.isPending || !state.isDirty}>
                                     {"Создать"}
                                 </Button>}
                                 </>

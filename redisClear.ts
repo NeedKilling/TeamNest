@@ -6,7 +6,6 @@ import { redis } from "@/server/redis";
 
 async function clear(){
 try {
-  // Передайте список ключей для удаления
     await redis.del("projects")
   console.log(`Успешно удалено ключей`);
 } catch (error) {

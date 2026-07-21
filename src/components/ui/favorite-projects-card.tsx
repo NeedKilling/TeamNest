@@ -6,15 +6,75 @@ import { stageLabels } from "@/lib/schemas/project";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./dialog";
 import { Button } from "./button";
 import Link from "next/link";
+import VacancyCard from "./vacansy-card";
+import { useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/client/api";
+import { Spinner } from "./spinner";
+import { toast } from "sonner";
+import { Avatar, AvatarFallback, AvatarGroup, AvatarGroupCount, AvatarImage } from "./avatar";
+import { authClient } from "@/lib/client/auth-client";
 
 export default function FavoriteProjectsCard({item, isFavorite, toggle}:
-    {item: Projects, isFavorite: boolean,toggle: (projectId: string, isFavorite: boolean) => void}){
+    {item: Projects, isFavorite: boolean,toggle: (projectId: string, isFavorite: boolean) => void
+    }){
     const imgUrl = "http://localhost:3000/api/files/"
     
    const handleClick = (e: React.MouseEvent)=>{
         e.stopPropagation() 
         toggle(item.id, isFavorite)
     }   
+    const [open,setOpen] = useState(false)
+
+    
+    const {data: session, isPending, error} = authClient.useSession()
+
+     const {data: vacancies, isLoading} = useQuery({
+            queryKey: ["vacancies", item.id],
+            queryFn: async () =>{
+                return (await api.vacancies["projects"]({projectId: item.id}).get()).data
+            }
+        })
+        const [selectedVacancyId, setSelectedVacancyId] = useState<string | null>(null);
+        const applyMutation = useMutation({
+                mutationKey: ["applyVacancy"],
+                mutationFn: async ({ vacancyId }: { vacancyId: string }) => {
+                const response = await api.applications.post({ vacancyId });
+                if (response.error) {
+                        const errorMessage = `${response.error.status} ${response.error.value.type || response.error.value.message || response.error.value.summary} `;
+                        throw new Error(errorMessage);
+                    } 
+            },
+            onSuccess: () => {
+                toast.success("Отклик отправлен!");
+                setOpen(false);
+                setSelectedVacancyId(null);
+            },
+            onError: (err: Error) => {
+                toast.error(`Ошибка: ${err.message}`);
+            },
+        });
+        
+        const handleApply = () => {
+            if (!selectedVacancyId) {
+            toast.warning("Выберите вакансию");
+            return;
+            }
+            applyMutation.mutate({ vacancyId: selectedVacancyId });
+        };
+
+        const {data: members} = useQuery({
+            queryKey: ["project-members",item.id],
+            queryFn: async () => {
+                return (await api.applications.members({id: item.id}).get()).data
+            },
+            enabled: !!item.id
+        })
+    
+        const initials = (name: string, lastName: string)=>{
+            return `${name.slice(0,1).toUpperCase()}${lastName.slice(0,1).toUpperCase()}`
+        } 
+
     return(
         
 
@@ -69,6 +129,20 @@ export default function FavoriteProjectsCard({item, isFavorite, toggle}:
                         <h3 className="text-xl font-medium ">{item.name}</h3>
                         <Star onClick={handleClick} className={`${isFavorite ? "fill-yellow-400 text-yellow-400" : ""} cursor-pointer`}/>
                     </div>
+                    
+                        {members && members.length > 0 &&(
+                        <AvatarGroup>
+                        {members.map((mem)=>(
+                            <Avatar key = {mem?.id} size="lg">
+                                <AvatarImage src={mem?.image ? `${imgUrl+mem.image}` : ""} alt="avatar" />
+                                    <AvatarFallback>{initials(mem!.name,mem!.lastName)}</AvatarFallback>
+                            </Avatar>
+                            
+                        ))}
+                         <AvatarGroupCount>+1</AvatarGroupCount>
+                        </AvatarGroup> 
+                        )} 
+                    
                     <div>
                         <p className="text-base font-medium">Описание</p>
                         <p className="h-fit line-clamp-4 text-base font-normal text-tGray-sub mt-1">{item.description} Lorem ipsum dolor sit amet consectetur, adipisicing elit. Porro esse, modi blanditiis mollitia necessitatibus, fugit maiores consequatur earum placeat veniam facere! Hic soluta voluptatem sint ut ducimus nulla distinctio corrupti?</p>
@@ -82,9 +156,50 @@ export default function FavoriteProjectsCard({item, isFavorite, toggle}:
                     </div>
                     
 
-                    {/* <div className="flex justify-end">
-                        <Button className="bg-black-component h-[45px] px-4 py-3 text-tWhite-main ">Смотреть вакансии</Button>
-                    </div> */}
+                    <Dialog open={open} onOpenChange={setOpen}>
+                        <DialogTrigger asChild>
+                            <div className="flex justify-end">
+                                <Button className="bg-black-component h-[45px] px-4 py-3 text-tWhite-main ">Смотреть вакансии</Button>
+                            </div>
+                        </DialogTrigger>
+
+                        <DialogContent className="!max-w-155 min-h-[256px]">
+                            <DialogHeader>
+                                <DialogTitle>Просмотр вакансий</DialogTitle>
+                            </DialogHeader>
+
+                            <div className="flex flex-col justify-between items-between">
+                                {
+                                    isLoading && <Spinner/>
+                                }
+
+                                {
+                                    vacancies && vacancies.length > 0 ? 
+            
+                                    <>
+                                        <div className="flex gap-4 flex-wrap">
+                                            { vacancies.map((item)=>(
+                                                <VacancyCard key={item.id} vac={item} isSelected={selectedVacancyId === item.id}
+                                                    onSelect={() => setSelectedVacancyId(item.id)}/>
+                                            ))}
+                                            
+                                        </div>
+                                        <div className="flex items-end justify-end gap-4 shrink-0 text-base">
+                                                    <Button className=" h-[45px] w-[82px] text-base" variant={"outline"} onClick={()=>{setOpen(!open);setSelectedVacancyId(null)}}>Назад</Button>
+                                                    <Button className=" h-[45px] w-[135px] text-base" onClick={handleApply}
+                                                                disabled={!selectedVacancyId || applyMutation.isPending}>Откликнутся</Button>
+                                            </div>
+                                    </>
+            
+                                    : <div className="flex justify-center items-center text-xl text-tBlack-main">Вакансий нет</div>
+
+                                }
+                                
+                                
+                            </div>
+                            
+                        </DialogContent>
+                    </Dialog>
 
                 
                 </div>

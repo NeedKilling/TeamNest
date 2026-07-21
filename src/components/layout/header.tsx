@@ -12,7 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 export default function Header(){
     const path = usePathname()
     const isActive = (href: string) => path.startsWith(href) ? "hidden" : ""
-    
+      
 
 
     const {data: session, isPending, error} = authClient.useSession()

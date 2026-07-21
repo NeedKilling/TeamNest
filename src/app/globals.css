@@ -20,6 +20,19 @@
 
 
 
+  --color-bgPending: #FEF9C3;
+  --color-borderPending: #FDE047;
+  --color-textPending: #854D0E;
+
+  --color-bgAccepted: #DCFCE7;
+  --color-borderAccepted: #86EFAC;
+  --color-textAccepted: #166534;
+
+  --color-bgRejected: #FEE2E2;
+  --color-borderRejected: #FCA5A5;
+  --color-textRejected: #991B1B;
+
+
   --color-tBlack-main: #1C1C1C;
   --color-tWhite-main: #fff;
   --color-tGray-sub: #5F6368;

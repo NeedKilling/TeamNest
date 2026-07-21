@@ -14,14 +14,26 @@ import { projectsSchema, stageEnum } from "@/lib/schemas/project"
 import { Projects } from "@/lib/types/projects"
 import { useForm } from "@tanstack/react-form"
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { CalendarIcon, TriangleAlert } from "lucide-react"
+import { CalendarIcon, Plus, TriangleAlert } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 import z from "zod/v4"
 import { format } from "date-fns";
 import { ru } from "date-fns/locale/ru"
+import Vacancy from "@/components/ui/vacansy"
+import VacanciesFormUpdate from "@/components/ui/vacansies-form-update"
+
+
+export const vacancy = z.object({
+  name: z.string(),
+  city: z.string(),
+  description: z.string()
+}) 
 
 export function UpdateProjects({projects}: {projects?: Projects}){
+
+
+    console.log(projects)
 
     const [isOpen, setIsOpen] = useState(false)
     const [step,setStep] = useState(0)
@@ -54,6 +66,7 @@ export function UpdateProjects({projects}: {projects?: Projects}){
     const form = useForm({
         defaultValues: {...projects} as z.infer<typeof projectsSchema>,
         onSubmit: async ({value}) =>{
+            console.log("Данные формы перед отправкой:", value);
             await updateMutation.mutate(value)
         },
         validators:{
@@ -66,9 +79,16 @@ export function UpdateProjects({projects}: {projects?: Projects}){
             return (await api.industries.get()).data
         }
     })
+    const {data: specialization} = useQuery({
+        queryKey: ["specialization"],
+        queryFn: async ()=>{
+            return (await api.specialization.get()).data
+        }
+    })
     const stageEnumProjects = stageEnum.options
 
-
+    const [newVacancy, setNewVacancy] = useState({ name: "", city: "", description: "" });
+    const [open, setOpen] = useState(false)
 
     return(
         <Dialog open = {isOpen} onOpenChange={setIsOpen}>
@@ -265,7 +285,7 @@ export function UpdateProjects({projects}: {projects?: Projects}){
                                     <p>Загрузите фото</p>
                                     <div className = "flex justify-between gap-5">
                                         <Input className="mt-2" value={field.state.value ?? ""} onChange={(e)=> field.handleChange(e.target.value ?? "")} 
-                                            placeholder="Введите id изображения" 
+                                            placeholder="Необязательно" 
                                             errors = {Array.from(new Set(field.state.meta.errors.flatMap((e)=>e?.message ?? "")))}/>
 
                                         <ImageInput onChange={(e)=>field.handleChange(e)}/>
@@ -278,9 +298,30 @@ export function UpdateProjects({projects}: {projects?: Projects}){
                         </form.Field>
                     </>}
 
+
+
+
+
+                           
+                    {step === 3 &&
+
+                       <>
+                         {projects && (<VacanciesFormUpdate specialization={specialization!} projectId={projects.id!} />)}
+                       </>
+                        
+                        }
+
+
+
+
+
+
+
+
+
                     <div className="flex gap-5 justify-between">
                         <Button type="button" onClick={()=>setStep(step-1)} disabled = {step===0} variant={"outline"}>Назад</Button>
-                        <Button className = {`${step === 2 ? "hidden" : "block"}`} type="button" onClick={()=>setStep(step+1)} disabled = {step===2}>Далее</Button>
+                        <Button className = {`${step === 3 ? "hidden" : "block"}`} type="button" onClick={()=>setStep(step+1)} disabled = {step===3}>Далее</Button>
                     </div>
 
                     <form.Subscribe>
@@ -290,7 +331,7 @@ export function UpdateProjects({projects}: {projects?: Projects}){
                                 
                                 <>
                                     
-                                {step == 2 && <Button className="absolute bottom-4 right-4"  disabled = { !state.canSubmit || updateMutation.isPending || !state.isDirty}>
+                                {step == 3 && <Button className="absolute bottom-4 right-4"  disabled = { !state.canSubmit || updateMutation.isPending || !state.isDirty}>
                                     { "Обновить" }
                                 </Button>}
                                 </>

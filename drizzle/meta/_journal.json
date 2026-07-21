@@ -148,6 +148,48 @@
       "when": 1784256481972,
       "tag": "0020_sad_thunderbolt_ross",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1784381724492,
+      "tag": "0021_solid_sunspot",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1784410456098,
+      "tag": "0022_tearful_brother_voodoo",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1784494050738,
+      "tag": "0023_spicy_zuras",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1784564941330,
+      "tag": "0024_silly_major_mapleleaf",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1784592905718,
+      "tag": "0025_bumpy_gorilla_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1784640560762,
+      "tag": "0026_bent_mordo",
+      "breakpoints": true
     }
   ]
 }

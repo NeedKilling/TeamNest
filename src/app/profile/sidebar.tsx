@@ -17,7 +17,7 @@ export function SideBar(){
             <Separator/>
             <Link href={"/profile/my-projects"} className = {isActive("/profile/my-projects") ? ActiveClass : ""}>Мои проекты {isActive("/profile/my-projects")?"*" : ""}</Link>
             <Separator/>
-            <Link href={"/profile/my-responses"} className = {isActive("/profile/my-responses") ? ActiveClass : ""}>Мои отклики {isActive("/profile/my-responses")?"*" : ""}</Link>
+            <Link href={"/profile/applications"} className = {isActive("/profile/applications") ? ActiveClass : ""}>Мои отклики {isActive("/profile/applications")?"*" : ""}</Link>
             <Separator/>
             <Link href={"/profile/favorite"} className = {isActive("/profile/favorite") ? ActiveClass : ""}>Избранное {isActive("/profile/favorite")?"*" : ""}</Link>
             

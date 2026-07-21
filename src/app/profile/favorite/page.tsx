@@ -12,7 +12,7 @@ export default async function Favorite(){
     const favoritePersonnel = (await api.favoritePersonnel.get({headers: await nextHeaders()})).data
     const personnels = favoritePersonnel?.map((item)=>item.personnel)
 
-
+     const myProjects = (await api.projects["my-projects"].get()).data
     return(
         <div className="flex-1 flex flex-col gap-5 ">
             <div className="border rounded-xl  p-5 bg-gray-component flex-1 flex justify-center">
@@ -22,15 +22,15 @@ export default async function Favorite(){
                         <TabsTrigger className="p-5 h-full text-base" value="personnel">Кадры</TabsTrigger>
                     </TabsList>
 
-                    <TabsContent value="projects">
+                    <TabsContent value="projects" className="flex justify-center">
                         <FavoriteProjectList initialData={projects ?? []} favorite = {favoriteProjects ?? []}/>
                     </TabsContent>
-                    <TabsContent value="personnel">
-                        <FavoritePersonneList initialData={personnels ?? []} favorite = {favoritePersonnel ?? []}/>
+                    <TabsContent value="personnel" className="flex justify-center">
+                        <FavoritePersonneList initialData={personnels ?? []} favorite = {favoritePersonnel ?? []} MyProjects={myProjects ?? []}/>
                     </TabsContent>
                 </Tabs>
                 
-            </div>
+            </div>  
         </div>
         
     )

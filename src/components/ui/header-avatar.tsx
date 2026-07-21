@@ -23,9 +23,11 @@ import Link from "next/link"
 
 
 export default function HeaderAvatar({user}:{user: typeof authClient.$Infer.Session.user}){
-
+    const imgUrl = "http://localhost:3000/api/files/"
     const [open,setOpen] = useState(false)
-
+    const initials = (name: string, lastName: string)=>{
+        return `${name.slice(0,1).toUpperCase()}${lastName.slice(0,1).toUpperCase()}`
+    } 
 
 
     return(
@@ -33,8 +35,8 @@ export default function HeaderAvatar({user}:{user: typeof authClient.$Infer.Sess
             <DropdownMenuTrigger asChild >
                <button className="focus:outline-none flex items-center justify-between cursor-pointer border-none w-[62px] p-0 h-fit"  >
                     <Avatar>
-                        <AvatarImage src="/img/avatar.svg"/>
-                        <AvatarFallback>CN</AvatarFallback>
+                        <AvatarImage className="shrink-0" src={user?.image ? `${imgUrl+user.image}` : "/img/avatar.svg"}/>
+                        <AvatarFallback>{initials(user.name,user.lastName)}</AvatarFallback>
                     </Avatar>
                     {open ? <ChevronUp strokeWidth={1.5} className = "size-6  text-white-component" /> : <ChevronDown strokeWidth={1.5} className="size-6 text-white-component"/>}
                </button>
@@ -44,8 +46,8 @@ export default function HeaderAvatar({user}:{user: typeof authClient.$Infer.Sess
                 <DropdownMenuGroup>
                     <DropdownMenuLabel className="flex gap-2 mb-4">
                         <Avatar size="lg">
-                            <AvatarImage src="/img/avatar.svg"/>
-                            <AvatarFallback>CN</AvatarFallback>
+                            <AvatarImage className="shrink-0" src={user?.image ? `${imgUrl+user.image}` : "/img/avatar.svg"}/>
+                            <AvatarFallback>{initials(user.name,user.lastName)}</AvatarFallback>
                         </Avatar>
                         <div>
                             <p className="text-base font-medium text-tBlack-main">{user.name} {user.lastName}</p>
@@ -55,7 +57,7 @@ export default function HeaderAvatar({user}:{user: typeof authClient.$Infer.Sess
 
                     <DropdownMenuItem onClick={()=>setOpen(!open)}><Link className="flex gap-2 items-center" href={"/profile"}> <CircleUserRound /> Мой профиль</Link></DropdownMenuItem>
                     <DropdownMenuItem onClick={()=>setOpen(!open)}><Link className="flex gap-2 items-center" href={"/profile/my-projects"}><FolderOpen /> Мои проекты </Link></DropdownMenuItem>
-                    <DropdownMenuItem onClick={()=>setOpen(!open)}><NotebookTabs /> Мои отклики</DropdownMenuItem>
+                    <DropdownMenuItem onClick={()=>setOpen(!open)}><Link className="flex gap-2 items-center" href={"/profile/applications"}><NotebookTabs /> Мои отклики</Link></DropdownMenuItem>
                     <DropdownMenuItem onClick={()=>setOpen(!open)}><Link className="flex gap-2 items-center" href={"/profile/favorite"}><Star /> Избранное</Link></DropdownMenuItem>
                     <DropdownMenuItem onClick={()=>setOpen(!open)} className="mt-2" variant="destructive"><Link className="flex gap-2 items-center" href={"/auth/sign-out"}><LogOutIcon />Выход</Link></DropdownMenuItem>
                     

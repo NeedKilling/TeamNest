@@ -68,7 +68,7 @@ export default function ProjectList({initialData, favorite}: {initialData: Proje
 
                 <>
                     {projects.map((item)=>(
-                    <ProjectsProfileCard key={item.id} item={item} toggle = {handleToggle} isFavorite = {favoriteId.has(item.id)}/>
+                        <ProjectsProfileCard key={item.id} item={item} toggle = {handleToggle} isFavorite = {favoriteId.has(item.id)}/>
                     ))}
 
                     <div className={`  flex justify-center items-center w-[300px] h-[300px]  `}>

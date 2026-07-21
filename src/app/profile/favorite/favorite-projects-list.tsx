@@ -7,13 +7,6 @@ import { queryClient } from "@/lib/client/query-client"
 import { toast } from "sonner"
 import FavoriteProjectsCard from "@/components/ui/favorite-projects-card"
 export default function FavoriteProjectList({initialData, favorite}: {initialData: Projects[], favorite: FavoriteProjects[]}){
-    // const  {data: projects} = useQuery({
-    //     queryKey: ["projects"],
-    //     queryFn: async () =>{
-    //         return (await api.projects.get()).data
-    //     },
-    //     initialData: initialData
-    // })
 
     const {data: favorites} = useQuery({
             queryKey: ["favoritesProjects"],
@@ -63,11 +56,13 @@ export default function FavoriteProjectList({initialData, favorite}: {initialDat
             }
     
 
+
+
     return(
        <div className="grid grid-cols-3 gap-10">
                    { projects?.length ?? 0 > 0 ? 
                         projects?.map((item)=>(
-                            <FavoriteProjectsCard key={item.id} item={item} toggle = {handleToggle} isFavorite = {favoriteId.has(item.id)}/>
+                            <FavoriteProjectsCard key={item.id} item={item} toggle = {handleToggle} isFavorite = {favoriteId.has(item.id)} />
                         ))
                     
                    : 

@@ -1,3 +1,4 @@
+"use client"
 import { Personnel } from "@/lib/types/personnel";
 import { Star,CalendarDays,Dot } from "lucide-react";
 import { Separator } from "./separator";
@@ -6,11 +7,20 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "./button";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "./hover-card";
+import { Projects } from "@/lib/types/projects";
+import { useState } from "react";
+import InviteProjects from "./invite-projects";
+import { useMutation } from "@tanstack/react-query";
+import { api } from "@/lib/client/api";
+import { toast } from "sonner";
+import { queryClient } from "@/lib/client/query-client";
 
-export default function PersonnelCard({item, isFavorite, toggle}:
-    {item: Personnel, isFavorite: boolean,toggle: (projectId: string, isFavorite: boolean) => void}){
+export default function PersonnelCard({item, isFavorite, toggle,myProjects}:
+    {item: Personnel, isFavorite: boolean,toggle: (projectId: string, isFavorite: boolean) => void, myProjects: Projects[]}){
     const imgUrl = "http://localhost:3000/api/files/"
-   
+    const [open,setOpen] = useState(false)
+
     const initials = (name: string, lastName: string)=>{
         return `${name.slice(0,1).toUpperCase()}${lastName.slice(0,1).toUpperCase()}`
     }   
@@ -19,6 +29,43 @@ export default function PersonnelCard({item, isFavorite, toggle}:
         e.stopPropagation() 
         toggle(item.id, isFavorite)
     } 
+    console.log(item)
+
+
+    const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+    const inviteMutate = useMutation({
+        mutationKey: ["invite"],
+        mutationFn: async ({projectId, userId}:{projectId:string, userId:string})=>{
+            const response = await api.applications.post({projectId: projectId, userId:userId})
+                if (response.error) {
+                    const errorMessage = `${response.error.status} ${response.error.value.type || response.error.value.message || response.error.value.summary} `;
+                    throw new Error(errorMessage);
+                } 
+        },
+        onSuccess: ()=>{
+            queryClient.invalidateQueries({
+                queryKey:["project-applications"]
+            })
+            queryClient.invalidateQueries({
+                queryKey:["my-applications"]
+            })
+            toast.success("Приглашение отправлено")
+            setOpen(!open)
+        },
+        onError: (err: Error)=>{
+            toast.error(`Ошибка:
+                    ${err.message || err.name}`)
+        }
+    })
+
+    const handleInvite = ()=>{
+        if(!selectedProjectId){
+            toast.warning("Выберите проект")
+            return
+        }
+        inviteMutate.mutate({projectId: selectedProjectId, userId: item.user.id})
+    }   
+
 
     return(
         
@@ -35,12 +82,8 @@ export default function PersonnelCard({item, isFavorite, toggle}:
                                     <div className="flex items-center gap-2">
                                         <Avatar size="lg">
                                             <AvatarImage src={item.user?.image ? `${imgUrl+item.user.image}` : "/img/avatar.svg"} 
-                                                onError={(e)=>e.currentTarget.src = "/img/avatar.svg"} alt="avatar" 
-                                                    ref={(el) => {
-                                                        if (el && el.complete && el.naturalWidth === 0) {
-                                                        el.src = "/img/avatar.svg";
-                                                    }
-                                                }}/>
+                                            
+                                                />
                                             <AvatarFallback>{initials(item.user.name,item.user.lastName)}</AvatarFallback>
                                         </Avatar>
                                         <div>
@@ -78,17 +121,20 @@ export default function PersonnelCard({item, isFavorite, toggle}:
                     <div className="flex justify-between items-center w-full">
                        
                         <div className="flex items-center gap-2 min-w-0">
-                            <Avatar size="lg" className="">
-                                <AvatarImage src={imgUrl+item.image} 
-                                    onError={(e)=>e.currentTarget.src = "/img/avatar.svg"} alt="avatar" 
-                                    ref={(el) => {
-                                        if (el && el.complete && el.naturalWidth === 0) {
-                                            el.src = "/img/avatar.svg";
-                                        }
-                                    }}
-                                />
-                                <AvatarFallback>{initials(item.user.name,item.user.lastName)}</AvatarFallback>
-                            </Avatar>
+                            <HoverCard>
+                                <HoverCardTrigger>
+                                    <Avatar size="lg" className="">
+                                        <AvatarImage src={item.user?.image ? `${imgUrl+item.user.image}` : "/img/avatar.svg"}/> 
+                                   
+                                        <AvatarFallback>{initials(item.user.name,item.user.lastName)}</AvatarFallback>
+                                    </Avatar>
+                                </HoverCardTrigger>
+
+                                <HoverCardContent side="top" align="start" className="!bg-[#1c1c1c00] !w-fitt p-0 relative right-6">
+                                    <img className="w-[100px] h-[100px] rounded-[100%]" src={item.user?.image ? `${imgUrl+item.user.image}` : "/img/avatar.svg"} alt="avatar" />
+                                </HoverCardContent>
+                            </HoverCard>
+                            
                             <div className="min-w-0">
                                 <h3 className="text-base font-medium text-tBlack-main truncate">
                                     {item.user.name} {item.user.lastName}
@@ -152,9 +198,40 @@ export default function PersonnelCard({item, isFavorite, toggle}:
                     </div>
 
                     <div className="flex justify-end">
-                        <Button className="bg-black-component h-[45px] px-4 py-3 text-tWhite-main">
-                            Смотреть вакансии
-                        </Button>
+                        <Dialog open={open} onOpenChange={setOpen}>
+                            <DialogTrigger asChild>
+                                <Button className="bg-black-component h-[45px] px-4 py-3 text-tWhite-main">
+                                    Пригласить в проект
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className={` min-h-[256px] max-h-[800px] 
+                                  ${myProjects && myProjects.length>4 ? "!max-w-[1300px] !min-w-155 " : "!max-w-155"}`}>
+                                <DialogHeader>
+                                    <DialogTitle>Просмотр кадра</DialogTitle>
+                                </DialogHeader>
+                                <div className="flex flex-col gap-5 justify-between items-between">
+                                    {myProjects && myProjects.length  > 0 ? 
+                                    <>
+                                        <div className="flex gap-4 flex-wrap">
+                                            {myProjects.map((proj,index)=>(
+                                                <InviteProjects key = {`${proj}_${index}`} project={proj}
+                                                    isSelected={selectedProjectId === proj.id}
+                                                    onSelect={() => setSelectedProjectId(proj.id)}
+                                                />
+                                            ))}
+                                        </div>
+                                        <div className="flex items-end justify-end gap-4 shrink-0 text-base">
+                                            <Button className=" h-[45px] w-[82px] text-base" variant={"outline"} onClick={()=>{setOpen(!open), setSelectedProjectId(null)}}>Назад</Button>
+                                            <Button className=" h-[45px] w-fit text-base" onClick={handleInvite} disabled={!selectedProjectId} >Пригласить в проект</Button>
+                                        </div>
+                                    </>
+                                    :
+                                        <div className="flex justify-center items-center text-xl text-tBlack-main gap-2">У вас пока еще нет своих проектов <Link className="underline hover:text-tGray-sub"href="/profile/my-projects">создать?</Link></div>
+                                    }
+                            </div>
+
+                            </DialogContent>
+                        </Dialog>
                     </div>
                 </div>
             </DialogContent>

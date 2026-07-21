@@ -8,15 +8,8 @@ import { toast } from "sonner"
 import { Personnel } from "@/lib/types/personnel"
 import PersonnelCard from "@/components/ui/personnel-card"
 
-export default function FavoritePersonneList({initialData, favorite}: {initialData: Personnel[],favorite: FavoritePersonnel[]}){
-    // const  {data: personnel} = useQuery({
-        //     queryKey: ["personnel"],
-        //     queryFn: async () =>{
-        //         return (await api.personnel.get()).data
-        //     },
-        //     initialData: initialData
-        // })
-    
+export default function FavoritePersonneList({initialData, favorite,MyProjects}: {initialData: Personnel[],favorite: FavoritePersonnel[],MyProjects: Projects[]}){
+
         const {data: favorites} = useQuery({
                 queryKey: ["favoritesPersonnel"],
                 queryFn: async ()=>{
@@ -26,6 +19,16 @@ export default function FavoritePersonneList({initialData, favorite}: {initialDa
             })
         console.log(favorites)
         const personnels = favorites?.map((item)=>item.personnel)
+
+
+        const  {data: myProjects} = useQuery({
+                queryKey: ["my-projects"],
+                queryFn: async () =>{
+                    return (await api.projects["my-projects"].get()).data
+                },
+                initialData: MyProjects
+            })
+
 
         const favoriteId = new Set(favorites?.map((item)=>item.personnelId) || [])
             const toggleMutation = useMutation({
@@ -65,7 +68,7 @@ export default function FavoritePersonneList({initialData, favorite}: {initialDa
         <div className="grid grid-cols-3 gap-10">
             { personnels?.length ?? 0 > 0 ? 
                 personnels?.map((item)=>(
-                    <PersonnelCard key={item.id} item={item} toggle = {handleToggle} isFavorite = {favoriteId.has(item.id)}/>
+                    <PersonnelCard key={item.id} item={item} toggle = {handleToggle} isFavorite = {favoriteId.has(item.id)} myProjects={myProjects!}/>
                 ))
             
             : 

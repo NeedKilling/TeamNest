@@ -11,10 +11,10 @@ async function runMigrations() {
         console.log('✅ Migrations applied successfully!');
     } catch (error) {
         console.error('❌ Migration failed:');
-        // Здесь вы увидите полную информацию об ошибке
+       
         console.error(error);
     } finally {
-        await pool.end(); // Закрываем соединение с БД
+        await pool.end(); 
     }
 }
 

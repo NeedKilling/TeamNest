@@ -1,6 +1,6 @@
 import { projectsSchema, projectsSchemaForServer } from "@/lib/schemas/project";
 import { db } from "@/server/db";
-import { favoriteProjects, industries, projects } from "@/server/db/schema";
+import { favoriteProjects, industries, projects, vacancies } from "@/server/db/schema";
 import { and, eq, ne } from "drizzle-orm";
 import Elysia from "elysia";
 import z from "zod/v4";
@@ -9,19 +9,6 @@ import { redis } from "bun";
 import { AppError } from "..";
 
 const patchProjectSchema = projectsSchema.partial()
-// const notFound = async function(paramsId: string){
-//     const response = await db.query.projects.findFirst({
-//         where: and(
-//             eq(projects.id, paramsId ),
-//             eq(projects.isDeleted, false ),
-//         ) 
-//     })
-
-//     if(!response){
-//         throw new AppError("Стартап не найден", 404, "NOT_FOUND")
-//     }
-// }
-
 
 
 
@@ -35,7 +22,8 @@ export const projectsRouter = new Elysia({
             orderBy: (projects, {asc}) => asc(projects.createdAt),
             where: eq(projects.isDeleted, false),
             with: {
-                industries: true
+                industries: true,
+                
             },
             
         })
@@ -64,8 +52,10 @@ export const projectsRouter = new Elysia({
             eq(projects.isDeleted, false)
         ),
         with: {
-            industries: true
+            industries: true,
+            
         },
+        
     })
 
     if((await response).length == 0){
@@ -130,7 +120,7 @@ export const projectsRouter = new Elysia({
         throw new AppError("Стартап с таким именем уже существует",409,"CONFLICT")
     }
 
-    await db.insert(projects).values({
+    const [returning] = await db.insert(projects).values({
         name: body.name,
         description: body.description,
         industriesId: body.industriesId,
@@ -138,10 +128,12 @@ export const projectsRouter = new Elysia({
         startDate: body.startDate,
         linkProject: body.linkProject,
         image: body.image || null,
-        userId: session?.user.id!
-    })
+        userId: session?.user.id!,
+    }).returning({id: projects.id})
 
     await redis.del("projects")
+
+    return returning
 },{
     body: projectsSchemaForServer,
     isSignedId: true
@@ -186,7 +178,7 @@ export const projectsRouter = new Elysia({
         stage: body.stage,
         startDate: body.startDate,
         linkProject: body.linkProject,
-        image: body.image || null
+        image: body.image || null,
     }).where(eq(projects.id, params.id))
 
     await redis.del("projects")
@@ -216,6 +208,8 @@ export const projectsRouter = new Elysia({
     }
 
     await db.update(projects).set({isDeleted: true}).where(eq(projects.id, params.id))
+    await db.update(vacancies).set({ isDeleted: true }).where(eq(vacancies.projectId, params.id))
+    await db.update(favoriteProjects).set({isDeleted: true}).where(eq(favoriteProjects.projectId, params.id))
 
     await redis.del("projects")
 },{

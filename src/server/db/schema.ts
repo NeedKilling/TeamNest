@@ -2,11 +2,16 @@ import { relations } from "drizzle-orm";
 import * as pg from "drizzle-orm/pg-core";
 import {commonFields} from "./utils"
 import { user } from "./auth-schema";
+import z from "zod/v4";
+import { vacancies } from "./vacancies";
+import { applications } from "./applications";
 
 export * from "./auth-schema"
 export * from "./files"
 export * from "./feedback"
 export * from "./favorite"
+export * from "./applications"
+export * from "./vacancies"
 
 
 
@@ -81,7 +86,7 @@ export const projects  = pg.pgTable("projects",{
     linkProject: pg.text("link_project").notNull(),
     image: pg.varchar("image", {length: 255}),
 
-    userId: pg.varchar("user_id").notNull().references(() => user.id)
+    userId: pg.varchar("user_id").notNull().references(() => user.id),
     
 }) 
 
@@ -90,7 +95,7 @@ export const industries = pg.pgTable("industries",{
     name: pg.varchar("name", {length: 255}).notNull()
 })
 
-export const projectsRealations = relations(projects, ({one}) => ({
+export const projectsRealations = relations(projects, ({one, many}) => ({
     industries: one(industries,{
         references: [industries.id],
         fields: [projects.industriesId]
@@ -98,8 +103,11 @@ export const projectsRealations = relations(projects, ({one}) => ({
     user: one(user,{
         references: [user.id],
         fields: [projects.userId]
-    })
+    }),
+    vacancies: many(vacancies),
+    applications: many(applications)
 }))
 export const industriesRealations = relations(industries, ({many})=>({
     projects: many(projects)
+
 }))

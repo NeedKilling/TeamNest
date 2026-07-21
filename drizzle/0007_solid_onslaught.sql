@@ -5,7 +5,7 @@ BEGIN
     END IF;
 END $$;
 
---> statement-breakpoint
+
 DO $$
 BEGIN
     IF NOT EXISTS (

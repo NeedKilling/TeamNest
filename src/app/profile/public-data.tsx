@@ -498,10 +498,6 @@ export function PublicData({initialData}:{initialData: Personnel | null}){
 
             <form.Subscribe>
                 {(state)=>{
-                    console.log('canSubmit:', state.canSubmit);
-                    console.log('isDirty:', state.isDirty);
-                    console.log('isValid:', state.isValid);
-                    console.log('errors:', state.errors);
                     return(
                         <div className="flex gap-5 justify-center">
                         <Button type={"button"} variant={"outline"} onClick={()=>{

@@ -8,19 +8,55 @@ import { Button } from "./button";
 import Link from "next/link";
 import DeleteProjects from "@/app/profile/my-projects/delete";
 import { UpdateProjects } from "@/app/profile/my-projects/update";
+import VacancyCard from "./vacansy-card";
+import { useState } from "react";
+import { Spinner } from "./spinner";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/client/api";
+import { Avatar, AvatarFallback, AvatarGroup, AvatarGroupCount, AvatarImage } from "./avatar";
+import { authClient } from "@/lib/client/auth-client";
 
 export default function ProjectsProfileCard({item, isFavorite, toggle}:
     {item: Projects, isFavorite: boolean,toggle: (projectId: string, isFavorite: boolean) => void}){
     const imgUrl = "http://localhost:3000/api/files/"
-    
+    console.log(item)
    const handleClick = (e: React.MouseEvent)=>{
         e.stopPropagation() 
         toggle(item.id, isFavorite)
     }   
+
+    const {data: session, isPending, error} = authClient.useSession()
+
+    const {data: vacancies, isLoading} = useQuery({
+        queryKey: ["vacancies", item.id],
+        queryFn: async () =>{
+            return (await api.vacancies["projects"]({projectId: item.id}).get()).data
+        }
+    })
+    
+
+
+    const [open,setOpen] = useState(false)
+    const [open2,setOpen2] = useState(false)
+
+
+    const {data: members} = useQuery({
+        queryKey: ["project-members",item.id],
+        queryFn: async () => {
+            return (await api.applications.members({id: item.id}).get()).data
+        },
+        enabled: !!item.id
+    })
+
+    const initials = (name: string, lastName: string)=>{
+        return `${name.slice(0,1).toUpperCase()}${lastName.slice(0,1).toUpperCase()}`
+    }  
+    const [selectedVacancyId, setSelectedVacancyId] = useState<string | null>(null);
+
     return(
         
 
-        <Dialog >
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <div className="relative w-[300px] h-[300px] bg-white-component border-gray-border border shadow-custom2 rounded-[16px] text-tBlack-main">
                     <img className = "w-full h-[180px] object-cover rounded-t-[16px]" src={imgUrl+item.image} 
@@ -71,6 +107,18 @@ export default function ProjectsProfileCard({item, isFavorite, toggle}:
                         <h3 className="text-xl font-medium ">{item.name}</h3>
                         <Star onClick={handleClick} className={`${isFavorite ? "fill-yellow-400 text-yellow-400" : ""} cursor-pointer`}/>
                     </div>
+                    {members && members.length > 0 &&(
+                        <AvatarGroup>
+                        {members.map((mem)=>(
+                            <Avatar key = {mem?.id} size="lg">
+                                <AvatarImage src={mem?.image ? `${imgUrl+mem.image}` : ""} alt="avatar" />
+                                    <AvatarFallback>{initials(mem!.name,mem!.lastName)}</AvatarFallback>
+                            </Avatar>
+                            
+                        ))}
+                         <AvatarGroupCount>+1</AvatarGroupCount>
+                        </AvatarGroup> 
+                        )} 
                     <div>
                         <p className="text-base font-medium">Описание</p>
                         <p className="h-fit line-clamp-4 text-base font-normal text-tGray-sub mt-1">{item.description} Lorem ipsum dolor sit amet consectetur, adipisicing elit. Porro esse, modi blanditiis mollitia necessitatibus, fugit maiores consequatur earum placeat veniam facere! Hic soluta voluptatem sint ut ducimus nulla distinctio corrupti?</p>
@@ -84,9 +132,51 @@ export default function ProjectsProfileCard({item, isFavorite, toggle}:
                     </div>
                     
 
-                    {/* <div className="flex justify-end">
-                        <Button className="bg-black-component h-[45px] px-4 py-3 text-tWhite-main ">Смотреть вакансии</Button>
-                    </div> */}
+
+                    <Dialog open={open2} onOpenChange={setOpen2}>
+                        <DialogTrigger asChild>
+                            <div className="flex justify-center py-10">
+                                <Button className="bg-black-component h-[45px] px-4 py-3 text-tWhite-main ">Смотреть вакансии</Button>
+                            </div>
+                        </DialogTrigger>
+
+                        <DialogContent className="!max-w-155 min-h-[256px]">
+                            <DialogHeader>
+                                <DialogTitle>Просмотр вакансий</DialogTitle>
+                            </DialogHeader>
+
+                            <div className="flex flex-col justify-between items-between">
+                                {
+                                    isLoading && <Spinner/>
+                                }
+
+                                {
+                                    vacancies && vacancies.length > 0 ? 
+            
+                                    <>
+                                        <div className="flex gap-4 flex-wrap">
+                                            { vacancies.map((item)=>(
+                                                <VacancyCard key={item.id} vac={item} isSelected={selectedVacancyId === item.id}
+                                                    onSelect={() => setSelectedVacancyId(item.id)}/>
+                                            ))}
+                                            
+                                        </div>
+                                        <div className="flex items-end justify-end gap-4 shrink-0 text-base">
+                                                    <Button className=" h-[45px] w-[82px] text-base" variant={"outline"} onClick={()=>setOpen2(!open)}>Назад</Button>
+                                                    {/* <Button className=" h-[45px] w-[135px] text-base" >Откликнутся</Button> */}
+                                            </div>
+                                    </>
+            
+                                    : <div className="flex justify-center items-center text-xl text-tBlack-main">Вакансий нет</div>
+
+                                }
+                                
+                                
+                            </div>
+                            
+                        </DialogContent>
+                    </Dialog>
+                    
 
                     <div className="flex gap-5 justify-center">
                         <UpdateProjects projects = {item}/>

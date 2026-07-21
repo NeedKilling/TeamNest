@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS "categories" (
 	"name" varchar(255) NOT NULL
 );
 
---> statement-breakpoint
+
 CREATE TABLE IF NOT EXISTS "industries" (
 	"id" varchar(255) PRIMARY KEY NOT NULL,
 	"is_deleted" boolean DEFAULT false,
@@ -19,7 +19,6 @@ CREATE TABLE IF NOT EXISTS "industries" (
 	"name" varchar(255) NOT NULL
 );
 
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "personnel" (
 	"id" varchar(255) PRIMARY KEY NOT NULL,
 	"is_deleted" boolean DEFAULT false,
@@ -35,7 +34,7 @@ CREATE TABLE IF NOT EXISTS "personnel" (
 	"categories_id" varchar(255) NOT NULL
 );
 
---> statement-breakpoint
+
 CREATE TABLE IF NOT EXISTS "projects" (
 	"id" varchar(255) PRIMARY KEY NOT NULL,
 	"is_deleted" boolean DEFAULT false,
@@ -48,7 +47,7 @@ CREATE TABLE IF NOT EXISTS "projects" (
 	"link_project" text NOT NULL
 );
 
---> statement-breakpoint
+
 CREATE TABLE IF NOT EXISTS "specialization" (
 	"id" varchar(255) PRIMARY KEY NOT NULL,
 	"is_deleted" boolean DEFAULT false,
@@ -56,21 +55,20 @@ CREATE TABLE IF NOT EXISTS "specialization" (
 	"name" varchar(255) NOT NULL
 );
 
---> statement-breakpoint
+
 DO $$ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'personnel_specialization_id_specialization_id_fk') THEN
         ALTER TABLE "personnel" ADD CONSTRAINT "personnel_specialization_id_specialization_id_fk" FOREIGN KEY ("specialization_id") REFERENCES "public"."specialization"("id") ON DELETE no action ON UPDATE no action;
     END IF;
 END $$;
 
---> statement-breakpoint
 DO $$ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'personnel_categories_id_categories_id_fk') THEN
         ALTER TABLE "personnel" ADD CONSTRAINT "personnel_categories_id_categories_id_fk" FOREIGN KEY ("categories_id") REFERENCES "public"."categories"("id") ON DELETE no action ON UPDATE no action;
     END IF;
 END $$;
 
---> statement-breakpoint
+
 DO $$ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'projects_industries_id_industries_id_fk') THEN
         ALTER TABLE "projects" ADD CONSTRAINT "projects_industries_id_industries_id_fk" FOREIGN KEY ("industries_id") REFERENCES "public"."industries"("id") ON DELETE no action ON UPDATE no action;

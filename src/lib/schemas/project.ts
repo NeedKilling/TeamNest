@@ -3,6 +3,7 @@ import z from "zod/v4"
 export const stageEnum = z.enum(['Idea', 'Realization', 'Completed']);                 
 export type Stage = z.infer<typeof stageEnum>
 
+
 export const projectsSchema = z.object({
     name: z.string({message: "Введите название проекта"}).min(3,{message: "минимум три символа"}),
     description: z.string({message: "Введите описание проекта"}).min(10,{message: "слишком коротко"}),
@@ -11,7 +12,7 @@ export const projectsSchema = z.object({
     // startDate: z.coerce.date({message: "Введите дату начала проекта"}),
     startDate: z.date({message: "Введите дату начала проекта"}),
     linkProject: z.string({message: "Введите ссылку на проект"}).min(5,{message: "минимум пять символов"}),
-    image: z.string().optional().nullable()
+    image: z.string().optional().nullable(),
 })
 
 export const stageLabels: Record<Stage, string> = {

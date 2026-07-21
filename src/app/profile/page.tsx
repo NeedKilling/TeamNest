@@ -4,9 +4,10 @@ import { auth } from "@/server/auth/auth"
 import { headers as nextHeaders} from "next/headers"
 import { PublicData } from "./public-data";
 import { Personnel } from "@/lib/types/personnel";
+import Image from "next/image";
+import AccountData from "./account-data";
 
 export default async function Profile(){
-    const imgUrl = "http://localhost:3000/api/files/"
     const session = await auth.api.getSession({
         headers: await nextHeaders()
     })
@@ -18,21 +19,10 @@ export default async function Profile(){
     return (
         <div className="flex-1 flex flex-col gap-5">
             <div className="border rounded-xl  p-5 bg-gray-component flex flex-col gap-3">
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 justify-start">
                     <h2 className="text-tBlack-main font-medium text-2xl">Учетные данные</h2>
-                    <p className="text-tGray-sub text-base pl-2 text-center">Вы можете менять свои личные данные, подтверждать почту, менять пароль</p>
                 </div>
-                <Avatar size="lg" >
-                    <AvatarImage src={user?.image ? `${imgUrl+user.image}` : "/img/avatar.svg"}/>
-                    <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-                <div>
-                    <p>{user?.name}</p>
-                    <p>{user?.lastName}</p>
-                </div>
-                <div>
-                    <p>{user?.email}</p>
-                </div>
+                <AccountData/>
             </div>
 
 

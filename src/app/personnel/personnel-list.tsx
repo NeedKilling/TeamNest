@@ -4,10 +4,19 @@ import { api } from "@/lib/client/api";
 import { queryClient } from "@/lib/client/query-client";
 import { FavoritePersonnel } from "@/lib/types/favorite";
 import { Personnel } from "@/lib/types/personnel";
+import { Projects } from "@/lib/types/projects";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { toast } from "sonner";
 
-export default function PersonnelList({initialData,favorite}:{initialData: Personnel[], favorite: FavoritePersonnel[]}){
+type filter = {
+    category?: string;
+    specializate?: string;
+    search?: string;
+  };
+
+export default function PersonnelList({initialData,favorite,filters,myProjects}:
+    {initialData: Personnel[], favorite: FavoritePersonnel[],filters: filter, myProjects: Projects[]}){
     const {data: personnel} = useQuery({
         queryKey: ["personnels"],
         queryFn: async ()=>{
@@ -23,6 +32,44 @@ export default function PersonnelList({initialData,favorite}:{initialData: Perso
         },
         initialData: favorite,
     })
+
+    const  {data: MyProjects} = useQuery({
+        queryKey: ["my-projects"],
+        queryFn: async () =>{
+            return (await api.projects["my-projects"].get()).data
+        },
+        initialData: myProjects
+    })
+
+    // const personnel = favorites?.map((item)=>item.personnel)
+
+    const filtredPersonnel = useMemo(()=>{
+            if(!personnel) return []
+            
+            return personnel.filter((item)=>{
+                if (filters.category && item.categories?.id !== filters.category) {
+            return false;
+            }
+            
+            if (filters.specializate && item.specialization?.id !== filters.specializate) {
+                return false;
+            }
+    
+            if (filters.search) {
+                const query = filters.search.toLowerCase();
+                const education = item.education?.toLowerCase().includes(query);
+                const resume = item.shortResume?.toLowerCase().includes(query);
+                if (!education && !resume) {
+                    return false;
+                        }
+                }
+            return true;
+    
+            })
+        },[personnel,filters])
+
+
+
     const favoriteId = new Set(favorites?.map((item)=>item.personnelId) || [])
     const toggleMutation = useMutation({
         mutationKey: ["toggle"],
@@ -59,10 +106,13 @@ export default function PersonnelList({initialData,favorite}:{initialData: Perso
 
 
     return (
-        <div className="py-12 flex gap-6 flex-wrap justify-center lg:justify-start min-h-[402px]">
-            {personnel?.map((item)=>( 
-                <PersonnelCard key={item!.id} item={item} toggle = {handleToggle} isFavorite = {favoriteId.has(item.id)}/> 
-             ))}
+        <div className={`h-[408px] flex-1 shrink-0 py-12 flex gap-6 flex-wrap justify-center ${filtredPersonnel.length > 0 ? "xl:justify-start": "xl:justify-center" }`}>
+            {filtredPersonnel.length > 0 ? filtredPersonnel?.map((item)=>(
+                <PersonnelCard key={item!.id} item={item} toggle = {handleToggle} isFavorite = {favoriteId.has(item.id)} myProjects={MyProjects!}/>
+            ))
+            :
+            <div className="h-[408px] flex flex-1 items-center justify-center">Ничего не найдено по заданным параметрам.</div>    
+        }
         </div>
     )
 }
