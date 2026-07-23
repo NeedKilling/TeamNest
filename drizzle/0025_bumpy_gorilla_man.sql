@@ -1,2 +1,0 @@
-ALTER TABLE "applications" ADD COLUMN "vacancy_id" varchar(255);--> statement-breakpoint
-ALTER TABLE "applications" ADD CONSTRAINT "applications_vacancy_id_vacancies_id_fk" FOREIGN KEY ("vacancy_id") REFERENCES "public"."vacancies"("id") ON DELETE no action ON UPDATE no action;
