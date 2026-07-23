@@ -59,7 +59,7 @@ export default function FavoriteProjectList({initialData, favorite}: {initialDat
 
 
     return(
-       <div className="grid grid-cols-3 gap-10">
+       <div className="lg:grid lg:grid-cols-3 lg:gap-10  flex flex-col gap-5  md:flex-row md:flex-wrap md:justify-center">
                    { projects?.length ?? 0 > 0 ? 
                         projects?.map((item)=>(
                             <FavoriteProjectsCard key={item.id} item={item} toggle = {handleToggle} isFavorite = {favoriteId.has(item.id)} />

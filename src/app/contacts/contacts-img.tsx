@@ -27,7 +27,7 @@ export default function ContactsImg(){
     ]
 
     return(
-        <div className="py-12 flex justify-center gap-32 container w-[1312px] mx-auto ">
+        <div className="py-12 flex items-center justify-center flex-col xl:flex-row  gap-9 md:gap-20 xl:gap-32 container w-[398px] xl:w-[1312px] mx-auto ">
             {Contacts.map((item,index)=>(
                 <ContactsCard key={index} item={item}/>
             ))}

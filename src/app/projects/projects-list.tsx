@@ -95,7 +95,7 @@ export default function ProjectsList({initialData, favorite,filters}: {initialDa
 
 
     return (
-        <div className={`min-h-[408px] shrink-0 py-12 flex gap-6 flex-wrap justify-center ${filtredProjects.length > 0 ? "xl:justify-start": "xl:justify-center" }`}>
+        <div className={`w-full min-h-[408px] shrink-0 py-12 flex gap-6 flex-wrap justify-center ${filtredProjects.length > 0 ? "xl:justify-start": "xl:justify-center" }`}>
             {filtredProjects.length > 0 ? filtredProjects?.map((item)=>(
                 <ProjectsCard key={item.id} item={item} toggle = {handleToggle} isFavorite = {favoriteId.has(item.id)}/>
             ))

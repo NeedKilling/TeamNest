@@ -90,7 +90,7 @@ const handleApply = () => {
 
         <Dialog >
             <DialogTrigger asChild>
-                <div className="relative w-[310px] max-h-[483px] bg-gray-component border border-gray-border rounded-[16px] text-tBlack-main">
+                <div className="relative w-full sm:w-[310px] max-h-[483px] bg-gray-component border border-gray-border rounded-[16px] text-tBlack-main">
                     <img className = "w-full h-[256px] object-fill rounded-t-[16px]" src={imgUrl+item.image} 
                         onError={(e)=>e.currentTarget.src = "/img/noImage.png"} alt="project image" 
                          ref={(el) => {
@@ -127,7 +127,7 @@ const handleApply = () => {
                     <div className="absolute top-4 right-4 bg-[#1C1C1C66] backdrop-blur-[10px] text-[14px] text-tWhite-main px-[6px] py-1 rounded-[16px]">{item.industries.name}</div>
                 </div>
             </DialogTrigger>
-            <DialogContent className="bg-lightGray-component !p-0 !max-w-155 ">
+            <DialogContent className="bg-lightGray-component !p-0 !max-w-[400px] sm:!max-w-155 ">
                 <DialogHeader className="p-4 pb-0 ">
                     <DialogTitle>Просмотр стартапа</DialogTitle>
                 </DialogHeader>
@@ -175,7 +175,7 @@ const handleApply = () => {
                             </div>
                         </DialogTrigger>
 
-                        <DialogContent className="!max-w-155 min-h-[256px]">
+                        <DialogContent className="!max-w-[400px] sm:!max-w-155 min-h-[256px]">
                             <DialogHeader>
                                 <DialogTitle>Просмотр вакансий</DialogTitle>
                             </DialogHeader>

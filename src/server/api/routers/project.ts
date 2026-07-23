@@ -1,6 +1,6 @@
 import { projectsSchema, projectsSchemaForServer } from "@/lib/schemas/project";
 import { db } from "@/server/db";
-import { favoriteProjects, industries, projects, vacancies } from "@/server/db/schema";
+import { applications, favoriteProjects, industries, projects, vacancies } from "@/server/db/schema";
 import { and, eq, ne } from "drizzle-orm";
 import Elysia from "elysia";
 import z from "zod/v4";
@@ -210,6 +210,7 @@ export const projectsRouter = new Elysia({
     await db.update(projects).set({isDeleted: true}).where(eq(projects.id, params.id))
     await db.update(vacancies).set({ isDeleted: true }).where(eq(vacancies.projectId, params.id))
     await db.update(favoriteProjects).set({isDeleted: true}).where(eq(favoriteProjects.projectId, params.id))
+    await db.update(applications).set({isDeleted: true}).where(eq(applications.projectId, params.id))
 
     await redis.del("projects")
 },{

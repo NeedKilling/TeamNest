@@ -1,6 +1,6 @@
 "use client"
 import { Projects } from "@/lib/types/projects";
-import { Star,CalendarDays } from "lucide-react";
+import { Star,CalendarDays, Dot } from "lucide-react";
 import { Separator } from "./separator";
 import { stageLabels } from "@/lib/schemas/project";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./dialog";
@@ -91,7 +91,7 @@ export default function ProjectsProfileCard({item, isFavorite, toggle}:
                     <div className="absolute top-0 right-0 rounded-[16px] rounded-br-[0px] rounded-tl-[0px] border border-[#ECEDEE66] bg-[#1C1C1C66] backdrop-blur-[10px] text-[14px] text-tWhite-main px-[6px] py-1 ">{item.industries.name}</div>
                 </div>
             </DialogTrigger>
-            <DialogContent className="bg-lightGray-component !p-0 !max-w-155 ">
+            <DialogContent className="bg-lightGray-component !p-0 md:!max-w-155 !max-w-[398px]">
                 <DialogHeader className="p-4 pb-0 ">
                     <DialogTitle>Просмотр стартапа</DialogTitle>
                 </DialogHeader>
@@ -102,7 +102,7 @@ export default function ProjectsProfileCard({item, isFavorite, toggle}:
                 />
                 
                     
-                <div className="p-4 pt-0 flex flex-col gap-4 text-tBlack-main">
+                <div className="p-4 pt-0 flex flex-col gap-1 md:gap-4 text-tBlack-main">
                     <div className="flex justify-between">
                         <h3 className="text-xl font-medium ">{item.name}</h3>
                         <Star onClick={handleClick} className={`${isFavorite ? "fill-yellow-400 text-yellow-400" : ""} cursor-pointer`}/>
@@ -121,26 +121,26 @@ export default function ProjectsProfileCard({item, isFavorite, toggle}:
                         )} 
                     <div>
                         <p className="text-base font-medium">Описание</p>
-                        <p className="h-fit line-clamp-4 text-base font-normal text-tGray-sub mt-1">{item.description} Lorem ipsum dolor sit amet consectetur, adipisicing elit. Porro esse, modi blanditiis mollitia necessitatibus, fugit maiores consequatur earum placeat veniam facere! Hic soluta voluptatem sint ut ducimus nulla distinctio corrupti?</p>
+                        <p className="h-fit line-clamp-5 md:line-clamp-4 text-[14px] md:text-base font-normal text-tGray-sub mt-1">{item.description} Lorem ipsum dolor sit amet consectetur, adipisicing elit. Porro esse, modi blanditiis mollitia necessitatibus, fugit maiores consequatur earum placeat veniam facere! Hic soluta voluptatem sint ut ducimus nulla distinctio corrupti?</p>
                     </div>
                            
                         
                     <div className="text-base font-normal text-tGray-sub">
-                        <p >Стадия проекта: <span className="text-black">{stageLabels[item.stage!]}</span></p>
-                        <p >Проект: <Link href={item.linkProject} className="text-[#0B76FA] underline">{item.linkProject}</Link></p>
-                        <p >Дата начала: <span className="text-black">{item.startDate.toLocaleDateString()}</span></p>
+                        <p className="flex"><Dot className="block md:hidden"/>Стадия проекта: <span className="text-black">{stageLabels[item.stage!]}</span></p>
+                        <p className="flex"><Dot className="block md:hidden"/>Проект: <Link href={item.linkProject} className="text-[#0B76FA] underline">{item.linkProject}</Link></p>
+                        <p className="flex"><Dot className="block md:hidden"/>Дата начала: <span className="text-black">{item.startDate.toLocaleDateString()}</span></p>
                     </div>
                     
 
 
                     <Dialog open={open2} onOpenChange={setOpen2}>
                         <DialogTrigger asChild>
-                            <div className="flex justify-center py-10">
+                            <div className="flex justify-center p-2 md:py-10">
                                 <Button className="bg-black-component h-[45px] px-4 py-3 text-tWhite-main ">Смотреть вакансии</Button>
                             </div>
                         </DialogTrigger>
 
-                        <DialogContent className="!max-w-155 min-h-[256px]">
+                        <DialogContent className="md:!max-w-155 !:max-w-[398px] min-h-[256px] ">
                             <DialogHeader>
                                 <DialogTitle>Просмотр вакансий</DialogTitle>
                             </DialogHeader>
@@ -162,7 +162,7 @@ export default function ProjectsProfileCard({item, isFavorite, toggle}:
                                             
                                         </div>
                                         <div className="flex items-end justify-end gap-4 shrink-0 text-base">
-                                                    <Button className=" h-[45px] w-[82px] text-base" variant={"outline"} onClick={()=>setOpen2(!open)}>Назад</Button>
+                                                    <Button className="mt-3 h-[45px] w-[82px] text-base" variant={"outline"} onClick={()=>setOpen2(!open)}>Назад</Button>
                                                     {/* <Button className=" h-[45px] w-[135px] text-base" >Откликнутся</Button> */}
                                             </div>
                                     </>

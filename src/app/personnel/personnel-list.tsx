@@ -106,7 +106,7 @@ export default function PersonnelList({initialData,favorite,filters,myProjects}:
 
 
     return (
-        <div className={`h-[408px] flex-1 shrink-0 py-12 flex gap-6 flex-wrap justify-center ${filtredPersonnel.length > 0 ? "xl:justify-start": "xl:justify-center" }`}>
+        <div className={`h-fit flex-1 shrink-0 py-12 flex gap-6 flex-wrap justify-center ${filtredPersonnel.length > 0 ? "xl:justify-start": "xl:justify-center" }`}>
             {filtredPersonnel.length > 0 ? filtredPersonnel?.map((item)=>(
                 <PersonnelCard key={item!.id} item={item} toggle = {handleToggle} isFavorite = {favoriteId.has(item.id)} myProjects={MyProjects!}/>
             ))

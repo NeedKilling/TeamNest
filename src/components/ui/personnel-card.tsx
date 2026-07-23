@@ -71,7 +71,7 @@ export default function PersonnelCard({item, isFavorite, toggle,myProjects}:
         
         <Dialog >
             <DialogTrigger asChild>
-                <div className="relative w-[310px] h-fit bg-gray-component border border-gray-border rounded-[16px] text-tBlack-main">
+                <div className="relative shadow-custom3 w-[310px] h-fit bg-gray-component border border-gray-border rounded-[16px] text-tBlack-main">
 
                    
             
@@ -111,7 +111,7 @@ export default function PersonnelCard({item, isFavorite, toggle,myProjects}:
 
                 </div>
             </DialogTrigger>
-            <DialogContent className="bg-lightGray-component !p-0 !max-w-[620px] w-full !min-w-0 overflow-hidden">
+            <DialogContent className="bg-lightGray-component !p-0 container !max-w-[398px]  md:!max-w-[620px] w-full !min-w-0 overflow-hidden">
                 <DialogHeader className="p-4 pb-0">
                     <DialogTitle>Просмотр кадра</DialogTitle>
                 </DialogHeader>
@@ -156,12 +156,12 @@ export default function PersonnelCard({item, isFavorite, toggle,myProjects}:
                    
                     <div className="flex flex-col gap-1 w-full break-all">
                         <h3 className="text-xl font-medium text-tBlack-main">Краткое резюме</h3>
-                        <p className="text-base text-tGray-sub">{item.shortResume}</p>
+                        <p className="text-[14px] md:text-base text-tGray-sub">{item.shortResume}</p>
                     </div>
 
                     <div className="flex flex-col gap-1 w-full break-all">
                         <h3 className="text-xl font-medium text-tBlack-main">Образование</h3>
-                        <p className="text-base text-tGray-sub">{item.education}</p>
+                        <p className="text-[14px] md:text-base text-tGray-sub">{item.education}</p>
                     </div>
                     
                     <Separator/>
@@ -205,14 +205,14 @@ export default function PersonnelCard({item, isFavorite, toggle,myProjects}:
                                 </Button>
                             </DialogTrigger>
                             <DialogContent className={` min-h-[256px] max-h-[800px] 
-                                  ${myProjects && myProjects.length>4 ? "!max-w-[1300px] !min-w-155 " : "!max-w-155"}`}>
+                                  ${myProjects && myProjects.length>4 ? "md:!max-w-[1300px] md:!min-w-155 max-w-[398px] " : "container w-[400px] md:w-full !max-w-155"}`}>
                                 <DialogHeader>
                                     <DialogTitle>Просмотр кадра</DialogTitle>
                                 </DialogHeader>
                                 <div className="flex flex-col gap-5 justify-between items-between">
                                     {myProjects && myProjects.length  > 0 ? 
                                     <>
-                                        <div className="flex gap-4 flex-wrap">
+                                        <div className="flex gap-5 md:gap-4 flex-wrap">
                                             {myProjects.map((proj,index)=>(
                                                 <InviteProjects key = {`${proj}_${index}`} project={proj}
                                                     isSelected={selectedProjectId === proj.id}
@@ -220,7 +220,7 @@ export default function PersonnelCard({item, isFavorite, toggle,myProjects}:
                                                 />
                                             ))}
                                         </div>
-                                        <div className="flex items-end justify-end gap-4 shrink-0 text-base">
+                                        <div className="flex justify-between md:items-end md:justify-end gap-4 shrink-0 text-base">
                                             <Button className=" h-[45px] w-[82px] text-base" variant={"outline"} onClick={()=>{setOpen(!open), setSelectedProjectId(null)}}>Назад</Button>
                                             <Button className=" h-[45px] w-fit text-base" onClick={handleInvite} disabled={!selectedProjectId} >Пригласить в проект</Button>
                                         </div>

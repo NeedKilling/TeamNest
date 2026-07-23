@@ -9,6 +9,7 @@ import { FavoriteProjects } from "@/lib/types/favorite";
 import { Industries } from "@/lib/types/industries";
 import { useSearchParams,useRouter } from "next/navigation";
 import {  useState, useMemo } from "react";
+import { Separator } from "@/components/ui/separator";
 
 export default function ProjectsClient({projects, favorite, industries}: {projects: Projects[], favorite: FavoriteProjects[], industries: Industries[]}){
 
@@ -20,16 +21,16 @@ export default function ProjectsClient({projects, favorite, industries}: {projec
 
 
     return(
-        <main className="container w-[1312px] mx-auto">
+        <main className="container w-[398px] sm:w-[600px] md:w-full xl:w-[1312px] mx-auto">
             <div className="pt-[133px] pb-12 mx-auto text-center">
-                <h1 className="text-[56px] font-semibold bg-gradient bg-clip-text text-transparent">Стартапы в поисках команды</h1>
-                <p className="text-xl text-tGray-sub w-170 mx-auto mt-4">Если вы ищете человека в команду, разместите информацию о вашем проекте в каталоге, чтобы её смогли найти соискатели</p>
+                <h1 className="xl:text-[56px] md:text-[40px] text-[28px] font-semibold bg-gradient bg-clip-text text-transparent">Стартапы в поисках команды</h1>
+                <p className="xl:text-xl text-base text-tGray-sub w-full xl:w-170 mx-auto mt-4">Если вы ищете человека в команду, разместите информацию о вашем проекте в каталоге, чтобы её смогли найти соискатели</p>
             </div>
 
-            <div className="flex justify-between">
-                <div className="flex gap-6">
+            <div className="flex lg:justify-between lg:flex-row flex-col lg:gap-0 gap-4">
+                <div className="flex lg:gap-6 gap-4 flex-col md:flex-row ">
                     <Select value={industry} onValueChange={setIndustry}>
-                        <SelectTrigger className="bg-gray-component min-w-[310px] !h-[44px] py-0 !text-[14px]">
+                        <SelectTrigger className="bg-gray-component w-full lg:min-w-[310px] !h-[44px] py-0 !text-[14px]">
                             <SelectValue placeholder="Все отрасли" className=""/>
                         </SelectTrigger>
 
@@ -46,7 +47,7 @@ export default function ProjectsClient({projects, favorite, industries}: {projec
                     </Select>
                     
                     <Select value={stage} onValueChange={setStage}>
-                        <SelectTrigger className="bg-gray-component min-w-[310px] !h-[44px] py-0 !text-[14px]">
+                        <SelectTrigger className="bg-gray-component w-full lg:min-w-[310px] !h-[44px] py-0 !text-[14px]">
                             <SelectValue placeholder="Все стадии" className=""/>
                         </SelectTrigger>
 
@@ -61,7 +62,7 @@ export default function ProjectsClient({projects, favorite, industries}: {projec
                             </SelectGroup>
                         </SelectContent>
                     </Select>
-
+                    <Separator className="bg-gray-border md:hidden"/>           
                 </div>
                 
                 <div className="relative">

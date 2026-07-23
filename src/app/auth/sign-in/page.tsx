@@ -56,7 +56,7 @@ export default function SignIn(){
 // py-[230px]
 
     return(
-        <div className = "mx-auto flex items-center flex-auto">
+        <div className = "pt-30 pb-10 md:pb-0 md:pt-0 mx-auto flex items-center flex-auto">
             <form 
                 onSubmit={(e)=>{
                     e.preventDefault(),
@@ -64,7 +64,7 @@ export default function SignIn(){
                     form.handleSubmit(e)
                 }}
 
-                className="w-120 p-5  rounded-[16px] flex flex-col gap-5  ">
+                className="container w-[398px] sm:w-120 p-5  rounded-[16px] flex flex-col gap-5  ">
                 
                 <h2 className="text-center text-3xl font-medium">Вход</h2>
 

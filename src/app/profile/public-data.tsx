@@ -125,8 +125,8 @@ export function PublicData({initialData}:{initialData: Personnel | null}){
             }}
             className="flex flex-col gap-10 py-12"
         >
-                <div className="flex justify-between">
-                    <div className="grid grid-cols-2 gap-y-5 gap-x-15">
+                <div className="flex xl:justify-between flex-col xl:flex-row gap-5">
+                    <div className="xl:grid xl:grid-cols-2  xl:gap-y-5 xl:gap-x-15   flex flex-col gap-5 justify-center items-center">
                             <form.Field name="age">
                                 {(field)=>{
                                     const isEdit = editing.age || false
@@ -355,10 +355,10 @@ export function PublicData({initialData}:{initialData: Personnel | null}){
                                 const isEdit = editing.education || false
                                 return(
                                     <div className="flex flex-col gap-2">
-                                        <p>Образование {isEdit ? "(ред.)" : ""}</p>
+                                        <p className="text-center xl:text-start">Образование {isEdit ? "(ред.)" : ""}</p>
                                         
                                         { isEdit ?  
-                                            <div className="w-120 relative">
+                                            <div className="xl:w-120 relative">
                                                 <Textarea className="!bg-white-component !text-base w-full min-h-20  relative resize-none h-fit !pl-2.5 !pr-7"  value={field.state.value} onChange={(e)=> field.handleChange(e.target.value ?? undefined)}  
                                                 placeholder="Введите образование" 
                                                 errors = {Array.from(new Set(field.state.meta.errors.flatMap((e)=>e?.message ?? "")))}/>
@@ -367,7 +367,7 @@ export function PublicData({initialData}:{initialData: Personnel | null}){
 
                                             :
 
-                                            <div className="relative w-120">
+                                            <div className="relative xl:w-120">
                                                 <div className="!bg-white-component w-full min-h-20 rounded-lg border border-input bg-transparent pl-2.5 pr-7  py-2 h-fit text-tGray-sub"><div className="relative  break-words">{personnel?.education ?? "-"}</div></div>
                                                 <button type="button" className="absolute top-1/2 -translate-y-1/2 right-2" onClick={()=>addEditing("education")}><Pencil width={18} height={18} className=" text-tGray-sub"/></button>
                                             </div>
@@ -390,8 +390,8 @@ export function PublicData({initialData}:{initialData: Personnel | null}){
                             {(field)=>{
                                 const isEdit = editing.shortResume || false
                                 return(
-                                    <div className="w-[1018px] flex flex-col gap-2">
-                                        <p>Резюме {isEdit ? "(ред.)" : ""}</p>
+                                    <div className="xl:w-[1018px] flex flex-col gap-2">
+                                        <p className="text-center xl:text-start">Резюме {isEdit ? "(ред.)" : ""}</p>
                                         
                                         { isEdit ?  
                                             <div className="w-full relative">
@@ -447,7 +447,7 @@ export function PublicData({initialData}:{initialData: Personnel | null}){
                                 return(
                                     <div className="flex flex-col gap-2">
                                         <p>Теги/skills</p>
-                                        <div className="flex gap-2 break-words w-[1018px] flex-wrap shrink-0">
+                                        <div className="flex gap-2 break-words xl:w-[1018px] flex-wrap shrink-0">
                                             {skills.length ? 
                                                skills.map((item,index)=>(
                                                 <div key={`${item}_${index}`} className="flex justify-between gap-3 items-center pr-2 pl-4 rounded-4xl  bg-gray-border shrink-0 h-9">

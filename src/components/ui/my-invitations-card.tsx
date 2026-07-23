@@ -59,7 +59,7 @@ export default function MyInvitationsCard({item}: {item: ProjectApplicationsData
     })
 
     return(
-       <div className="relative w-[310px] h-fit bg-gray-component border border-gray-border rounded-[16px] text-tBlack-main shadow-custom3">
+       <div className="mx-auto md:mx-0 relative w-[310px] h-fit bg-gray-component border border-gray-border rounded-[16px] text-tBlack-main shadow-custom3">
             <div className="p-4  flex flex-col gap-4 ">
                     
                 <div className="flex justify-between">

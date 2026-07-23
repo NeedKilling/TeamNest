@@ -20,7 +20,7 @@ export default async function Profile(){
         <div className="flex-1 flex flex-col gap-5">
             <div className="border rounded-xl  p-5 bg-gray-component flex flex-col gap-3">
                 <div className="flex flex-col gap-2 justify-start">
-                    <h2 className="text-tBlack-main font-medium text-2xl">Учетные данные</h2>
+                    <h2 className="text-tBlack-main font-medium text-2xl xl:text-start text-center">Учетные данные</h2>
                 </div>
                 <AccountData/>
             </div>
@@ -28,9 +28,9 @@ export default async function Profile(){
 
             <div className="border rounded-xl  p-5 bg-gray-component">
                 <div className="flex flex-col gap-2">
-                    <h2 className="text-tBlack-main font-medium text-2xl">Публичные данные</h2>
-                    <p className="text-tGray-sub text-base pl-2 text-center">Для взаимодействия с нашим сайтом вы размещаете свои персональные данные в данном разделе. Информация, которую вы укажете, публичная. Она располагается на странице "Кадры" и видна другим пользователям сети Интернет.</p>
-                    <p  className="text-tGray-sub text-base pl-2 text-center">Минимальный допуск для доступа к разделу "Кадры" укажите ваше резюме и образование</p>
+                    <h2 className="text-tBlack-main font-medium text-2xl xl:text-start text-center">Публичные данные</h2>
+                    <p className="text-tGray-sub text-[12px] sm:text-base pl-2 text-center">Для взаимодействия с нашим сайтом вы размещаете свои персональные данные в данном разделе. Информация, которую вы укажете, публичная. Она располагается на странице "Кадры" и видна другим пользователям сети Интернет.</p>
+                    <p  className="text-tGray-sub text-[12px] sm:text-base pl-2 text-center">Минимальный допуск для доступа к разделу "Кадры" укажите ваше резюме и образование</p>
                 </div>
 
                 <PublicData initialData={personnel!}/>

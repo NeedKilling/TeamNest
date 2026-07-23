@@ -23,7 +23,7 @@ export default function MyApplicationsList({initialData}:{initialData: MyApplica
     
 
     return(
-        <div className="grid grid-cols-3 gap-10">
+        <div className="xl:grid xl:grid-cols-3 xl:gap-10  flex flex-col gap-5  md:flex-row md:flex-wrap md:justify-center">
             {invitations && invitations.length > 0 ? invitations.map((item)=>(
                     <MyInvitationsCard key={item.id} item={item}/>
                 ))

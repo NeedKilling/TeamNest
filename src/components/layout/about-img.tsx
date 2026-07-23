@@ -23,7 +23,7 @@ export function AboutImg(){
     ]
 
     return(
-        <div className="flex justify-between gap-9">
+        <div className="flex flex-col xl:flex-row xl:justify-between gap-6 xl:gap-9">
             {AboutList.map((item,index)=><AboutCard key = {index} card={item}/>)}
         </div>
     )

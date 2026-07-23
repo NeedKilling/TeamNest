@@ -19,7 +19,7 @@ export default function SentInvitationsList({initialData}:{initialData:  Project
     const sentInvitations = applications?.filter(item => item.type === "invitation");
 
     return(
-        <div className="grid grid-cols-3 gap-10">
+        <div className="xl:grid xl:grid-cols-3 xl:gap-10  flex flex-col gap-5  md:flex-row md:flex-wrap md:justify-center">
             {sentInvitations && sentInvitations.length > 0 ? sentInvitations.map((item)=>(
                     <MyApplicationsCard key={item.id} item={item}/>
                 ))

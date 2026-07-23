@@ -19,7 +19,7 @@ export default function IncomingApplicationsList({initialData}:{initialData:  Pr
     const incomingApplications = applications?.filter(item => item.type === "application");
 
     return(
-        <div className="grid grid-cols-3 gap-10">
+        <div className="xl:grid xl:grid-cols-3 xl:gap-10  flex flex-col gap-5  md:flex-row md:flex-wrap md:justify-center">
                     {incomingApplications && incomingApplications.length > 0 ? incomingApplications.map((item)=>(
                             <MyInvitationsCard key={item.id} item={item}/>
                         ))

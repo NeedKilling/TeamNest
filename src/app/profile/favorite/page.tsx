@@ -17,7 +17,7 @@ export default async function Favorite(){
         <div className="flex-1 flex flex-col gap-5 ">
             <div className="border rounded-xl  p-5 bg-gray-component flex-1 flex justify-center">
                 <Tabs defaultValue="projects" className="w-full gap-5">
-                    <TabsList className="!h-[50px] shadow-custom3">
+                    <TabsList className="!h-[50px] shadow-custom3 mx-auto lg:mx-0">
                         <TabsTrigger className="p-5 h-full text-base" value="projects">Проекты</TabsTrigger>
                         <TabsTrigger className="p-5 h-full text-base" value="personnel">Кадры</TabsTrigger>
                     </TabsList>

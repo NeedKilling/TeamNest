@@ -1,6 +1,6 @@
 "use client"
 import { Projects } from "@/lib/types/projects";
-import { Star,CalendarDays } from "lucide-react";
+import { Star,CalendarDays, Dot } from "lucide-react";
 import { Separator } from "./separator";
 import { stageLabels } from "@/lib/schemas/project";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./dialog";
@@ -113,7 +113,7 @@ export default function FavoriteProjectsCard({item, isFavorite, toggle}:
                     <div className="absolute top-0 right-0 rounded-[16px] rounded-br-[0px] rounded-tl-[0px] border border-[#ECEDEE66] bg-[#1C1C1C66] backdrop-blur-[10px] text-[14px] text-tWhite-main px-[6px] py-1 ">{item.industries.name}</div>
                 </div>
             </DialogTrigger>
-            <DialogContent className="bg-lightGray-component !p-0 !max-w-155 ">
+            <DialogContent className="bg-lightGray-component !p-0 md:!max-w-155 !max-w-[398px] ">
                 <DialogHeader className="p-4 pb-0 ">
                     <DialogTitle>Просмотр стартапа</DialogTitle>
                 </DialogHeader>
@@ -150,9 +150,9 @@ export default function FavoriteProjectsCard({item, isFavorite, toggle}:
                            
                         
                     <div className="text-base font-normal text-tGray-sub">
-                        <p >Стадия проекта: <span className="text-black">{stageLabels[item.stage!]}</span></p>
-                        <p >Проект: <Link href={item.linkProject} className="text-[#0B76FA] underline">{item.linkProject}</Link></p>
-                        <p >Дата начала: <span className="text-black">{item.startDate.toLocaleDateString()}</span></p>
+                        <p className="flex"><Dot className="block md:hidden"/>Стадия проекта: <span className="text-black">{stageLabels[item.stage!]}</span></p>
+                        <p className="flex"><Dot className="block md:hidden"/>Проект: <Link href={item.linkProject} className="text-[#0B76FA] underline">{item.linkProject}</Link></p>
+                        <p className="flex"><Dot className="block md:hidden"/>Дата начала: <span className="text-black">{item.startDate.toLocaleDateString()}</span></p>
                     </div>
                     
 
@@ -163,7 +163,7 @@ export default function FavoriteProjectsCard({item, isFavorite, toggle}:
                             </div>
                         </DialogTrigger>
 
-                        <DialogContent className="!max-w-155 min-h-[256px]">
+                        <DialogContent className="md:!max-w-155 !max-w-[398px] min-h-[256px]">
                             <DialogHeader>
                                 <DialogTitle>Просмотр вакансий</DialogTitle>
                             </DialogHeader>
@@ -184,7 +184,7 @@ export default function FavoriteProjectsCard({item, isFavorite, toggle}:
                                             ))}
                                             
                                         </div>
-                                        <div className="flex items-end justify-end gap-4 shrink-0 text-base">
+                                        <div className="flex items-end justify-end gap-4 shrink-0 text-base mt-3">
                                                     <Button className=" h-[45px] w-[82px] text-base" variant={"outline"} onClick={()=>{setOpen(!open);setSelectedVacancyId(null)}}>Назад</Button>
                                                     <Button className=" h-[45px] w-[135px] text-base" onClick={handleApply}
                                                                 disabled={!selectedVacancyId || applyMutation.isPending}>Откликнутся</Button>

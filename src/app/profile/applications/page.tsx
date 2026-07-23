@@ -15,18 +15,20 @@ export default  async function Applications(){
     return(
          <div className="flex-1 flex flex-col gap-5 ">
             <div className="border rounded-xl  p-5 bg-gray-component flex-1 flex justify-center">
-                <Tabs defaultValue="myApplications" className="w-full gap-5">
+                <Tabs defaultValue="myApplications" className="w-full gap-20"  >
 
-                    <TabsList className="!h-[50px] shadow-custom3">
-                        <TabsTrigger className="p-5 h-full text-base" value="myApplications">Мои отклики</TabsTrigger>
-                        <TabsTrigger className="p-5 h-full text-base" value="invitations">Приглашения</TabsTrigger>
+                    <TabsList className="!h-[50px] md:shadow-custom3 flex-wrap !bg-gray-component !gap-5 md:!gap-0">
+                        <TabsTrigger className="p-5 h-full w-1/2 md:w-full md:text-base " value="myApplications">Мои отклики</TabsTrigger>
+                        <TabsTrigger className="p-5 h-full w-1/2  md:w-full md:text-base" value="invitations">Приглашения</TabsTrigger>
                         {myProjects&&myProjects.length > 0 && (
                             <>
-                                <TabsTrigger className="p-5 h-full text-base" value="incomingApplications">Откликнувшиейся</TabsTrigger>
-                                <TabsTrigger className="p-5 h-full text-base" value="sentInvitations">Приглашенные</TabsTrigger>
+                                <TabsTrigger className="p-5 w-1/2  md:w-full h-full md:text-base" value="incomingApplications">Откликнувшиейся</TabsTrigger>
+                                <TabsTrigger className="p-5 w-1/2  md:w-full  h-full md:text-base" value="sentInvitations">Приглашенные</TabsTrigger>
                             </>
                         )}
                     </TabsList>
+                    
+    
 
                     <TabsContent value="myApplications">
                        <MyApplicationsList initialData={applications??[]}/>

@@ -63,7 +63,7 @@ export default function ProjectList({initialData, favorite}: {initialData: Proje
     
 
     return(
-        <div className="grid grid-cols-3 gap-10">
+        <div className="lg:grid lg:grid-cols-3 lg:gap-10  flex flex-col gap-5  md:flex-row md:flex-wrap md:justify-center">
             {projects?.length ? 
 
                 <>

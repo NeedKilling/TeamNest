@@ -65,7 +65,7 @@ export default function FavoritePersonneList({initialData, favorite,MyProjects}:
             }
         
     return(
-        <div className="grid grid-cols-3 gap-10">
+        <div className="lg:grid lg:grid-cols-3 lg:gap-10  flex flex-col gap-5  md:flex-row md:flex-wrap md:justify-center">
             { personnels?.length ?? 0 > 0 ? 
                 personnels?.map((item)=>(
                     <PersonnelCard key={item.id} item={item} toggle = {handleToggle} isFavorite = {favoriteId.has(item.id)} myProjects={myProjects!}/>

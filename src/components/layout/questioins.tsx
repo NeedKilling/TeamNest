@@ -21,14 +21,15 @@ export function Questions(){
     const path = usePathname()
     const isActive = (href: string) => path.startsWith(href) ? "hidden" : ""
     return(
-        <div className={`${isActive("/admin")} ${isActive("/auth")} py-12 container w-[1312px] mx-auto`}>
-          <div className="relative p-4 h-[300px] bg-gray-component border border-gray-border rounded-[16px] flex flex-col items-start justify-between">
+        <div className={`${isActive("/admin")} ${isActive("/auth")} py-12 container w-[400px] sm:w-full xl:w-[1312px] mx-auto `}>
+          <div className="overflow-hidden relative p-4 h-[400px] xl:h-[300px] bg-gray-component border border-gray-border rounded-[16px] flex flex-col items-start justify-between">
             <div className="w-fit">
-              <h2 className="text-[56px] font-medium text-tBlack-main">Остались вопросы?</h2>
+              <h2 className="text-[28px] xl:text-[56px] font-medium text-tBlack-main">Остались вопросы?</h2>
               <p className="text-base font-normal text-tGray-sub">Хотите стать нашим автором или задать любой другой вопрос?<br /> Напишите нам!</p>
             </div>
             <QuestionsButton user={session?.user}/>
-            <img className = "postion absolute right-4 top-4" src = "/img/Vector.png" alt="vector" />
+            <img className = "absolute right-4 top-4 xl:h-[420px] h-[368px] xl:w-[420px] w-[368px] overflow-hidden pointer-events-none" src = "/img/Vector.png" alt="vector" />
+            {/* <img className = "" src = "/img/Vector.png" alt="vector" /> */}
           </div>
         </div>  
     )
@@ -79,9 +80,9 @@ export function QuestionsButton({user}: {user?: typeof authClient.$Infer.Session
             if(!open) form.reset() 
         }} >
             <DialogTrigger asChild>
-                <Button className="h-[50px] text-xl font-medium text-tWhite-main rounded-[12px] px-3 py-4 ">Задать вопрос</Button>
+                <Button className="xl:w-fit w-full h-[50px] text-xl font-medium text-tWhite-main rounded-[12px] px-3 py-4 touch-manipulation ">Задать вопрос</Button>
             </DialogTrigger>
-            <DialogContent className="min-w-[620px] min-h-[345px]">
+            <DialogContent className="lg:min-w-[620px] lg:min-h-[345px] max-w-[400px] max-h-[700px] lg:max-w-fit lg:max-h-fit">
                 <DialogHeader className="gap-0 justify-center text-base text-tBlack-main font-medium">
                     Обратная связь
                 </DialogHeader>
