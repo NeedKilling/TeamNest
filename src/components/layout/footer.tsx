@@ -9,12 +9,12 @@ import { usePathname } from "next/navigation"
 
 export default function Footer(){
     const path = usePathname()
-    const isActive = (href: string) => path.startsWith(href) ? "hidden" : ""
+    const isActive = (href: string) => path.startsWith(href) ? "md:hidden" : ""
     
     return(
         <>
         
-        <div className={`${isActive("/admin")} ${isActive("/auth/sign-out")}hidden container md:w-[750px] xl:w-[1312px] py-12 mx-auto md:flex flex-col gap-6`}>
+        <div className={`${isActive("/admin")} ${isActive("/auth/sign-out")} hidden container md:w-[750px] xl:w-[1312px] py-12 mx-auto md:flex flex-col gap-6`}>
             <div className="flex justify-between ">
                 <div className="flex gap-6 items-center">
                     <p className="text-xl  text-tBlack-main">TeamNest@bk.ru</p>
@@ -53,7 +53,7 @@ export default function Footer(){
 
 
 
-        <div className={`${isActive("/admin")} ${isActive("/auth/sign-out")}w-[398px] container md:hidden py-12 mx-auto flex flex-col gap-6`}>
+        <div className={`${isActive("/admin")} ${isActive("/auth/sign-out")} w-[398px] container md:hidden py-12 mx-auto flex flex-col gap-6`}>
             
 
             <div className="flex justify-between items-center">
