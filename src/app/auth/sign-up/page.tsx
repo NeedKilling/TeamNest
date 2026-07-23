@@ -13,6 +13,8 @@ import Link from "next/link"
 import { Checkbox } from "@/components/ui/checkbox"
 import { redirect,useRouter } from "next/navigation"
 import { toast } from "sonner"
+export const dynamic = 'force-dynamic'
+
 
 export default function SignUp(){
     const router = useRouter()

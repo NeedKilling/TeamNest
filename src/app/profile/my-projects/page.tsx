@@ -1,6 +1,7 @@
 import { api } from "@/server/api"
 import { headers as nextHeaders} from "next/headers"
 import ProjectList from "./projects-list"
+export const dynamic = 'force-dynamic'
 
 export default async function MyProjects(){
 

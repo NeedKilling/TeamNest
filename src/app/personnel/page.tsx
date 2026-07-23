@@ -3,6 +3,7 @@ import { api } from "@/server/api"
 
 import { headers as nextHeaders} from "next/headers"
 import PersonnelClient from "./perssonnel-client"
+export const dynamic = 'force-dynamic'
 
 export default async function Personnel(){
 

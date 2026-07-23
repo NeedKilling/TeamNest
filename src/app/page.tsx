@@ -4,7 +4,7 @@ import { AboutImg } from "@/components/layout/about-img";
 import Link from "next/link";
 import { authClient } from "@/lib/client/auth-client";
 import { Spinner } from "@/components/ui/spinner";
-
+export const dynamic = 'force-dynamic'
 
 export default function Home() {
 

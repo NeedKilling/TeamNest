@@ -5,7 +5,7 @@ import MyApplicationsList from "./my-applications-list"
 import MyInvitationsList from "./my-invitations-list"
 import IncomingApplicationsList from "./incoming-applications-list"
 import SentInvitationsList from "./sent-invitations-list"
-
+export const dynamic = 'force-dynamic'
 
 export default  async function Applications(){
 

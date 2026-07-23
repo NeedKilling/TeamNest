@@ -6,6 +6,8 @@ import { PublicData } from "./public-data";
 import { Personnel } from "@/lib/types/personnel";
 import Image from "next/image";
 import AccountData from "./account-data";
+export const dynamic = 'force-dynamic'
+
 
 export default async function Profile(){
     const session = await auth.api.getSession({

@@ -10,7 +10,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { redirect,useRouter } from "next/navigation";
-
+export const dynamic = 'force-dynamic'
 
 export default function SignIn(){
     const router = useRouter();

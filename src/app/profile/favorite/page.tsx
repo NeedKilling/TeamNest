@@ -3,7 +3,7 @@ import { headers as nextHeaders} from "next/headers"
 import FavoriteProjectList from "./favorite-projects-list"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import FavoritePersonneList from "./favorite-personnel-list"
-
+export const dynamic = 'force-dynamic'
 
 export default async function Favorite(){
     const favoriteProjects = (await api.favoriteProjects.get({headers: await nextHeaders()})).data

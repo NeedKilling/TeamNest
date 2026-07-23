@@ -3,7 +3,7 @@ import { api } from "@/server/api";
 
 import { headers as nextHeaders} from "next/headers"
 import ProjectsClient from "./projects-client";
-
+export const dynamic = 'force-dynamic'
 
 
 
