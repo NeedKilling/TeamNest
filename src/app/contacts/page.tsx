@@ -29,7 +29,7 @@ export default function Contacts(){
                             <img src="/img/Logo (2).png" className="h-6" alt="" />
                         </div>
 
-                        <img className="h-[380px] w-full z-1 absolute top-[-170px] xl:top-[-150px]" src="/img/Ellipse 21@2x.png" alt="" />
+                        <img className="h-[380px] w-full z-1 absolute top-[-170px] xl:top-[-150px]" src="/img/ellipse.png" alt="" />
                 </div>
                 {/* <div className="absolute inset-x-0 bottom-0 h-[294px] w-full bg-gradient-to-t from-white to-transparent pointer-events-none"/> */}
                 
