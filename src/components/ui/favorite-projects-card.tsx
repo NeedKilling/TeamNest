@@ -18,7 +18,7 @@ import { authClient } from "@/lib/client/auth-client";
 export default function FavoriteProjectsCard({item, isFavorite, toggle}:
     {item: Projects, isFavorite: boolean,toggle: (projectId: string, isFavorite: boolean) => void
     }){
-    const imgUrl = "http://localhost:3000/api/files/"
+    const imgUrl = "/api/files/"
     
    const handleClick = (e: React.MouseEvent)=>{
         e.stopPropagation() 

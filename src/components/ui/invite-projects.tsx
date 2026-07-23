@@ -2,7 +2,7 @@ import { Projects } from "@/lib/types/projects";
 
 export default function InviteProjects({project,isSelected,  onSelect}: {project: Projects, isSelected:boolean,onSelect:()=>void}){
 
-    const imgUrl = "http://localhost:3000/api/files/"
+    const imgUrl = "/api/files/"
     return(
         <div  className={`border bg-gray-component flex flex-col gap-2 md:gap-4 rounded-[16px] w-[170px] md:w-[286px] cursor-pointer transition-all 
             ${isSelected ? " border-[#0B76FA]" : "border-gray-border"}`} onClick={onSelect}>

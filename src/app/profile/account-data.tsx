@@ -10,7 +10,7 @@ import Image from "next/image"
 
 
 export default function AccountData(){
-const imgUrl = "http://localhost:3000/api/files/"
+const imgUrl = "/api/files/"
 
 
     const {data: session, isPending, error,refetch} = authClient.useSession()

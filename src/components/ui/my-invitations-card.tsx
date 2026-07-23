@@ -12,7 +12,7 @@ import z from "zod/v4";
 
 
 export default function MyInvitationsCard({item}: {item: ProjectApplicationsData}){
-    const imgUrl = "http://localhost:3000/api/files/"
+    const imgUrl = "/api/files/"
     const initials = (name: string, lastName: string)=>{
         return `${name.slice(0,1).toUpperCase()}${lastName.slice(0,1).toUpperCase()}`
     }   

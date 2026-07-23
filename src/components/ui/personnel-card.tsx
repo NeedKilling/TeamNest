@@ -18,7 +18,7 @@ import { queryClient } from "@/lib/client/query-client";
 
 export default function PersonnelCard({item, isFavorite, toggle,myProjects}:
     {item: Personnel, isFavorite: boolean,toggle: (projectId: string, isFavorite: boolean) => void, myProjects: Projects[]}){
-    const imgUrl = "http://localhost:3000/api/files/"
+    const imgUrl = "/api/files/"
     const [open,setOpen] = useState(false)
 
     const initials = (name: string, lastName: string)=>{
